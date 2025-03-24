@@ -135,7 +135,7 @@
     "UnzerName": "sofort",
     "SupportAuthurize": false,
     "SupportCharge": true,
-    "Deprecated": false,
+    "Deprecated": true,
     "Prepayment": false
   },
   {
@@ -143,6 +143,16 @@
     "ShortName": "twt",
     "SystemName": "Payments.Unzer.twint",
     "UnzerName": "twint",
+    "SupportAuthurize": false,
+    "SupportCharge": true,
+    "Deprecated": false,
+    "Prepayment": false
+  },
+  {
+    "Name": "Unzer Bank Transfer",
+    "ShortName": "opb",
+    "SystemName": "Payments.Unzer.open-banking-pis",
+    "UnzerName": "openbanking-pis",
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
