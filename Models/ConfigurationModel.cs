@@ -3,6 +3,7 @@ using Nop.Web.Framework.Mvc.ModelBinding;
 using Nop.Web.Framework.Models;
 using System.ComponentModel.DataAnnotations;
 using Nop.Web.Framework.Mvc;
+using Unzer.Plugin.Payments.Unzer.Infrastructure;
 
 namespace Unzer.Plugin.Payments.Unzer.Models
 {
@@ -59,7 +60,7 @@ namespace Unzer.Plugin.Payments.Unzer.Models
         public bool SkipPaymentInfo_OverrideForStore { get; set; }
 
         [NopResourceDisplayName("Plugins.Payments.Unzer.Fields.AutoCapture")]
-        public int AutoCapture { get; set; }
+        public AutoCapture AutoCapture { get; set; }
 
         public bool AutoCapture_OverrideForStore { get; set; }
         public SelectList AutoCaptureOptions { get; set; }

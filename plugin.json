@@ -2,7 +2,7 @@
   "Group": "Payment methods",
   "FriendlyName": "Unzer Payments",
   "SystemName": "Payments.Unzer",
-  "Version": "2.00.0",
+  "Version": "2.00.1",
   "SupportedVersions": [ "4.80" ],
   "Author": "Objecta Data",
   "DisplayOrder": 1,

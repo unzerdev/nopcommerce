@@ -14,19 +14,17 @@ namespace Unzer.Plugin.Payments.Unzer.Validators
 
         public ConfigurationValidator(ILocalizationService localizationService)
         {
-            //RuleFor(model => model.GateWayURL)
-            //    .NotEmpty()
-            //    .WithMessageAwait(localizationService.GetResourceAsync("Plugins.Payments.Unzer.Fields.GateWayURL.Required"));
+            RuleFor(model => model.UnzerApiBaseUrl)
+                .NotEmpty()
+                .WithMessageAwait(localizationService.GetResourceAsync("Plugins.Payments.Unzer.Fields.GateWayURL.Required"));
 
-            //RuleFor(model => model.AutoCapture)
-            //    .NotEmpty()
-            //    .WithMessageAwait(localizationService.GetResourceAsync("Plugins.Payments.Unzer.Fields.AutoCapture.Required"));
+            RuleFor(model => model.UnzerApiKey)
+                .NotEmpty()
+                .WithMessageAwait(localizationService.GetResourceAsync("Plugins.Payments.Unzer.Fields.UnzerApiKey.Required"));
 
-            //RuleFor(model => model.TextOnStatement)
-            //    .MaximumLength(22)
-            //    .WithMessageAwait(localizationService.GetResourceAsync("Plugins.Payments.Unzer.Fields.TextOnStatement.NoLongerThen22Chars"))
-            //    .Matches("[ -~]+")
-            //    .WithMessageAwait(localizationService.GetResourceAsync("Plugins.Payments.Unzer.Fields.TextOnStatement.MustBeReadable"));
+            RuleFor(model => model.AutoCapture)
+                .IsInEnum()
+                .WithMessageAwait(localizationService.GetResourceAsync("Plugins.Payments.Unzer.Fields.AutoCapture.Required"));
         }
 
         #endregion

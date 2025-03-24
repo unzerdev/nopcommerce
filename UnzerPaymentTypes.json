@@ -149,6 +149,16 @@
     "Prepayment": false
   },
   {
+    "Name": "Unzer Bank Transfer",
+    "ShortName": "opb",
+    "SystemName": "Payments.Unzer.open-banking-pis",
+    "UnzerName": "openbanking-pis",
+    "SupportAuthurize": false,
+    "SupportCharge": true,
+    "Deprecated": false,
+    "Prepayment": false
+  },
+  {
     "Name": "Unzer Direct Debit",
     "ShortName": "sdd",
     "SystemName": "Payments.Unzer.sepa-direct-debit",

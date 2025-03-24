@@ -331,6 +331,7 @@ namespace Unzer.Plugin.Payments.Unzer
 
                 ["Plugins.Payments.Unzer.Fields.UnzerApiKey"] = "Unzer API key",
                 ["Plugins.Payments.Unzer.Fields.UnzerApiKey.Hint"] = "Use the private key to authorize access to the API. The key will not be shown in UI",
+                ["Plugins.Payments.Unzer.Fields.UnzerApiKey.Required"] = "API key must be specififed",
 
                 ["Plugins.Payments.Unzer.Fields.ShopUrl"] = "Shop URL",
                 ["Plugins.Payments.Unzer.Fields.ShopUrl.Hint"] = "Override the default shop url, used for callback and return url",

@@ -72,7 +72,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
                 SelectedPaymentTypes= unzerPaymentSettings.SelectedPaymentTypes,
                 CurrencyCode = unzerPaymentSettings.CurrencyCode,
                 AdditionalFeePercentage = unzerPaymentSettings.AdditionalFeePercentage,
-                AutoCapture = Convert.ToInt32(unzerPaymentSettings.AutoCapture),
+                AutoCapture = unzerPaymentSettings.AutoCapture,
                 AutoCaptureOptions = await unzerPaymentSettings.AutoCapture.ToSelectListAsync(),
                 LogCallbackPostData = unzerPaymentSettings.LogCallbackPostData,
                 SkipPaymentInfo = unzerPaymentSettings.SkipPaymentInfo,
