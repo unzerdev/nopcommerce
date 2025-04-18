@@ -293,7 +293,8 @@ namespace Unzer.Plugin.Payments.Unzer
         {
             var settings = new UnzerPaymentSettings()
             {
-                UnzerApiBaseUrl = "https://api.unzer.com",
+                UnzerApiBaseUrl = UnzerPaymentDefaults.UnzerApiUrl,
+                UnzerTokenUrl = UnzerPaymentDefaults.UnzerTokenUrl,
                 UnzerApiKey = UnzerPaymentDefaults.DefaultApiKeySetting,
                 ShopUrl = (await _storeContext.GetCurrentStoreAsync()).Url,
                 LogoImage = string.Empty,
@@ -328,6 +329,9 @@ namespace Unzer.Plugin.Payments.Unzer
 
                 ["Plugins.Payments.Unzer.Fields.UnzerApiBaseUrl"] = "Unzer API URL",
                 ["Plugins.Payments.Unzer.Fields.UnzerApiBaseUrl.Hint"] = "Use the default Url for Unzer API calls, or enter a new one if updated to a new version (v2 ...)",
+
+                ["Plugins.Payments.Unzer.Fields.UnzerTokenUrl"] = "Unzer Token URL",
+                ["Plugins.Payments.Unzer.Fields.UnzerTokenUrl.Hint"] = "Use the default Url for Unzer Token calls, or enter a new one if updated to a new version (v2 ...)",
 
                 ["Plugins.Payments.Unzer.Fields.UnzerApiKey"] = "Unzer API key",
                 ["Plugins.Payments.Unzer.Fields.UnzerApiKey.Hint"] = "Use the private key to authorize access to the API. The key will not be shown in UI",
@@ -412,6 +416,15 @@ namespace Unzer.Plugin.Payments.Unzer
                 {
                     await _logger.ErrorAsync($"Updating metadata in Unzer Payment faliled with: {updMetaResult.StatusMessage}");
                 }
+            }
+
+            if(targetVersion == "2.10.0")
+            {
+                await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
+                {
+                    ["Plugins.Payments.Unzer.Fields.UnzerTokenUrl"] = "Unzer Token URL",
+                    ["Plugins.Payments.Unzer.Fields.UnzerTokenUrl.Hint"] = "Use the default Url for Unzer Token calls, or enter a new one if updated to a new version (v2 ...)",
+                });
             }
 
             await base.UpdateAsync(currentVersion, targetVersion);

@@ -17,6 +17,7 @@ namespace Unzer.Plugin.Payments.Unzer
         public static string MetadataPluginType = "unzer/nopcommerce";
         public static string MetadataShopType = "NopCommerce";
         public static string UnzerApiUrl => "https://api.unzer.com/";
+        public static string UnzerTokenUrl => "https://token.upcgw.com/v1/auth/token";
         public static string[] AllowedUrls = new string[] { "api.unzer.com", "api.heidelpay.com" };
         public static string ConfigurationRouteName => "Plugin.Payments.Unzer.Configure";
         public static string DefaultApiKeySetting = "<Unzer Private Key>";

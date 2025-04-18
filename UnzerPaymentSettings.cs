@@ -6,6 +6,7 @@ namespace Unzer.Plugin.Payments.Unzer
     public class UnzerPaymentSettings : ISettings
     {
         public string UnzerApiBaseUrl { get; set; }
+        public string UnzerTokenUrl { get; set; }
         public string UnzerApiKey { get; set; }
         public string UnzerPublicApiKey { get; set; }
         public bool LogCallbackPostData { get; set; }
