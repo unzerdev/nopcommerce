@@ -20,7 +20,13 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddHttpClient<UnzerApiHttpClient>().WithProxy();
+            services.AddTransient<ApiBearerTokenHandler>();
+            services.AddHttpClient<ApiBearerTokenHandler>().WithProxy();
+
+            services.AddHttpClient<UnzerApiHttpClient>()
+                .AddHttpMessageHandler<ApiBearerTokenHandler>()
+                .WithProxy();
+
             services.AddScoped<UnzerPaymentRequestBuilder>();
             services.AddScoped<IUnzerApiService, UnzerApiService>();
             services.AddScoped<ICallEventHandler<AuthorizeEventHandler>, AuthorizeEventHandler>();

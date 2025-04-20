@@ -32,6 +32,8 @@ namespace Unzer.Plugin.Payments.Unzer
         public static WebHookEventType[] CallbackEvents = new WebHookEventType[] { WebHookEventType.authorize, WebHookEventType.charge };
         public static string[] IgnoreCallbackEvents = new string[] { "authorize.failed", "authorize.pending", "authorize.canceled", "charge.failed", "charge.canceled" };
 
+        public static string[] UseBearerTokenUrls = new string[] { "v2/merchant/paypage" };
+
         public static string PrePaymentInstructionAttribute => "UnzerPrePaymentsInstruction";
 
         public static string MapPaymentType(string paymentTypes)
