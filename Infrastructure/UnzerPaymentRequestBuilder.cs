@@ -114,10 +114,10 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 resources = new Resources
                 {
                     customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
-                    metadataId = _unzerPaymentSettings.UnzerMetadataId,                    
+                    metadataId = _unzerPaymentSettings.UnzerMetadataId,
                     basketId = !string.IsNullOrEmpty(basketId) ? basketId : null
-                }                
-            };       
+                }
+            };
 
             return authReq;
         }
@@ -152,9 +152,13 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 
             var authReq = new CreatePayPageRequest
             {
+                mode = PayPageMode.authorize,
+                type = PayPageType.hosted,
                 currency = currencyCode,
                 amount = orderTotal,
                 orderId = order.Id.ToString("D6"),
+                //TODO: Set selected type only if _unzerPaymentSettings.SelectedPaymentTypes.Count > 1
+                paymentMethodsConfigs = new Paymentmethodsconfigs[] { },
                 urls = new Urls
                 {
                     returnCancel = "",
@@ -166,10 +170,9 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 style = new Style
                 {
                     logoImage = _unzerPaymentSettings.LogoImage,
-                },                
+                },
                 shopName = currentStore.Name,
                 recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : PayPageRecurrenceType.unscheduled,
-                //excludeTypes = excludeTypes,
                 resources = new Resources
                 {
                     customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
@@ -199,7 +202,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 
             var orderTotal = _currencyService.ConvertCurrency(order.OrderTotal, order.CurrencyRate);
             if (_shoppingCartSettings.RoundPricesDuringCalculation)
-            {             
+            {
                 orderTotal = Math.Round(orderTotal, 2);
             }
 
@@ -233,6 +236,68 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             return captReq;
         }
 
+        public async Task<CreatePayPageRequest> BuildV2CapturePayPageRequestAsync(Order order, bool isRecurring, string unzerCustomerId, string basketId)
+        {
+            _urlHelper = _urlHelper == null ? _urlHelperFactory.GetUrlHelper(_actionContextAccessor.ActionContext) : _urlHelper;
+
+            var shopUrl = await GetShopUrlAsync();
+
+            var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
+
+            var currentStore = _storeContext.GetCurrentStore();
+
+            var currencyCode = _unzerPaymentSettings.CurrencyCode;
+            if (string.IsNullOrEmpty(currencyCode))
+            {
+                currencyCode = order.CustomerCurrencyCode;
+            }
+
+            var orderTotal = _currencyService.ConvertCurrency(order.OrderTotal, order.CurrencyRate);
+            if (_shoppingCartSettings.RoundPricesDuringCalculation)
+            {
+                orderTotal = Math.Round(orderTotal, 2);
+            }
+
+            var unzerPaymentType = UnzerPaymentDefaults.ReadUnzerPaymentType(order.PaymentMethodSystemName);
+            var selectedPaymentMethod = unzerPaymentType != null ? unzerPaymentType.UnzerName : order.PaymentMethodSystemName;
+
+            var customer = await _customerService.GetCustomerByIdAsync(order.CustomerId);
+            var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
+
+            var authReq = new CreatePayPageRequest
+            {
+                mode = PayPageMode.charge,
+                type = PayPageType.hosted,
+                currency = currencyCode,
+                amount = orderTotal,
+                orderId = order.Id.ToString("D6"),
+                //TODO: Set selected type only if _unzerPaymentSettings.SelectedPaymentTypes.Count > 1
+                paymentMethodsConfigs = new Paymentmethodsconfigs[] { },
+                urls = new Urls
+                {
+                    returnCancel = "",
+                    returnFailure = "",
+                    returnPending = "",
+                    returnSuccess = returnUrl
+                },
+                card3ds = true,
+                style = new Style
+                {
+                    logoImage = _unzerPaymentSettings.LogoImage,
+                },
+                shopName = currentStore.Name,
+                recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : PayPageRecurrenceType.unscheduled,
+                resources = new Resources
+                {
+                    customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
+                    metadataId = _unzerPaymentSettings.UnzerMetadataId,
+                    basketId = !string.IsNullOrEmpty(basketId) ? basketId : null
+                }
+            };
+
+            return authReq;
+        }
+
         public async Task<CreatePrepaymentChargeRequest> BuildPrepaymentChargeRequestAsync(Order order, string prepaymentTypeId, bool isRecurring, string unzerCustomerId, string basketId)
         {
             var currentStore = _storeContext.GetCurrentStore();
@@ -258,7 +323,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             var captReq = new CreatePrepaymentChargeRequest
             {
                 currency = currencyCode,
-                amount = orderTotal,                
+                amount = orderTotal,
                 orderId = order.Id.ToString("D6"),
                 resources = new Resources
                 {
@@ -288,7 +353,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 paymentId = paymentId,
                 amount = captureAmount,
                 orderId = order.Id.ToString("D6"),
-            };            
+            };
 
             return capReq;
         }
@@ -383,7 +448,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
         public async Task<CreateMetadataRequest> BuildCreateMetadataRequestAsync()
         {
             var store = await _storeContext.GetCurrentStoreAsync();
-            var unzerPlugin = await _paymentPluginManager.LoadPluginBySystemNameAsync(UnzerPaymentDefaults.SystemName);            
+            var unzerPlugin = await _paymentPluginManager.LoadPluginBySystemNameAsync(UnzerPaymentDefaults.SystemName);
 
             var metaReq = new CreateMetadataRequest
             {
