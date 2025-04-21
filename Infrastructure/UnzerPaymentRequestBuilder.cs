@@ -122,6 +122,65 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             return authReq;
         }
 
+        public async Task<CreatePayPageRequest> BuildV2AuthorizePayPageRequestAsync(Order order, bool isRecurring, string unzerCustomerId, string basketId)
+        {
+            _urlHelper = _urlHelper == null ? _urlHelperFactory.GetUrlHelper(_actionContextAccessor.ActionContext) : _urlHelper;
+
+            var shopUrl = await GetShopUrlAsync();
+
+            var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
+
+            var currentStore = _storeContext.GetCurrentStore();
+
+            var currencyCode = _unzerPaymentSettings.CurrencyCode;
+            if (string.IsNullOrEmpty(currencyCode))
+            {
+                currencyCode = order.CustomerCurrencyCode;
+            }
+
+            var orderTotal = _currencyService.ConvertCurrency(order.OrderTotal, order.CurrencyRate);
+            if (_shoppingCartSettings.RoundPricesDuringCalculation)
+            {
+                orderTotal = Math.Round(orderTotal, 2);
+            }
+
+            var unzerPaymentType = UnzerPaymentDefaults.ReadUnzerPaymentType(order.PaymentMethodSystemName);
+            var selectedPaymentMethod = unzerPaymentType != null ? unzerPaymentType.UnzerName : order.PaymentMethodSystemName;
+
+            var customer = await _customerService.GetCustomerByIdAsync(order.CustomerId);
+            var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
+
+            var authReq = new CreatePayPageRequest
+            {
+                currency = currencyCode,
+                amount = orderTotal,
+                orderId = order.Id.ToString("D6"),
+                urls = new Urls
+                {
+                    returnCancel = "",
+                    returnFailure = "",
+                    returnPending = "",
+                    returnSuccess = returnUrl
+                },
+                card3ds = true,
+                style = new Style
+                {
+                    logoImage = _unzerPaymentSettings.LogoImage,
+                },                
+                shopName = currentStore.Name,
+                recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : PayPageRecurrenceType.unscheduled,
+                //excludeTypes = excludeTypes,
+                resources = new Resources
+                {
+                    customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
+                    metadataId = _unzerPaymentSettings.UnzerMetadataId,
+                    basketId = !string.IsNullOrEmpty(basketId) ? basketId : null
+                }
+            };
+
+            return authReq;
+        }
+
         public async Task<CreateCapturePayPageRequest> BuildCapturePayPageRequestAsync(Order order, bool isRecurring, string unzerCustomerId, string basketId)
         {
             _urlHelper = _urlHelper == null ? _urlHelperFactory.GetUrlHelper(_actionContextAccessor.ActionContext) : _urlHelper;

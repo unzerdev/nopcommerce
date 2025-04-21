@@ -14,7 +14,6 @@ namespace Unzer.Plugin.Payments.Unzer.Models.Api
         public string orderId { get; set; }
         public bool card3ds { get; set; }
         public string invoiceId { get; set; }
-        public string logoImage { get; set; }
         public string shopName { get; set; }
         public Resources resources { get; set; }
         public string paymentReference { get; set; }
