@@ -9,6 +9,7 @@ namespace Unzer.Plugin.Payments.Unzer
     public class UnzerPaymentDefaults
     {
         private static INopFileProvider _fileProvider = EngineContext.Current.Resolve<INopFileProvider>();
+        private static UnzerPaymentSettings _unzerPaymentSettings = EngineContext.Current.Resolve<UnzerPaymentSettings>();
         private static readonly string _unzerPaymentTypesFile = _fileProvider.MapPath("~/Plugins/Payments.Unzer/UnzerPaymentTypes.json");
         public static List<UnzerPaymentType> UnzerPaymentTypes = JsonSerializer.Deserialize<List<UnzerPaymentType>>(_fileProvider.ReadAllText(_unzerPaymentTypesFile, Encoding.UTF8));
 
@@ -16,8 +17,11 @@ namespace Unzer.Plugin.Payments.Unzer
 
         public static string MetadataPluginType = "unzer/nopcommerce";
         public static string MetadataShopType = "NopCommerce";
-        public static string UnzerApiUrl => "https://api.unzer.com/";
-        public static string UnzerTokenUrl => "https://token.upcgw.com/v1/auth/token";
+
+        public static string UnzerApiUrl => _unzerPaymentSettings.UnzerApiBaseUrl ?? "https://api.unzer.com/";
+        public static string UnzerPaypageApiUrl => _unzerPaymentSettings.UnzerPaypageApiUrl ?? "https://paypage.test.unzer.com/";
+        public static string UnzerTokenUrl => _unzerPaymentSettings.UnzerTokenUrl ?? "https://token.upcgw.com/v1/auth/token";
+        
         public static string[] AllowedUrls = new string[] { "api.unzer.com", "api.heidelpay.com" };
         public static string ConfigurationRouteName => "Plugin.Payments.Unzer.Configure";
         public static string DefaultApiKeySetting = "<Unzer Private Key>";

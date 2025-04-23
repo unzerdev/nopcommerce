@@ -154,6 +154,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             {
                 mode = PayPageMode.authorize,
                 type = PayPageType.hosted,
+                checkoutType = PayPageCheckoutType.payment_only,
                 currency = currencyCode,
                 amount = orderTotal,
                 orderId = order.Id.ToString("D6"),
@@ -265,9 +266,10 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
 
             var authReq = new CreatePayPageRequest
-            {
+            {                
                 mode = PayPageMode.charge,
                 type = PayPageType.hosted,
+                checkoutType = PayPageCheckoutType.payment_only,
                 currency = currencyCode,
                 amount = orderTotal,
                 orderId = order.Id.ToString("D6"),

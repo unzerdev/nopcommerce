@@ -17,6 +17,9 @@ namespace Unzer.Plugin.Payments.Unzer.Models
         [NopResourceDisplayName("Plugins.Payments.Unzer.Fields.UnzerTokenUrl")]
         public string UnzerTokenUrl { get; set; }
 
+        [NopResourceDisplayName("Plugins.Payments.Unzer.Fields.UnzerPaypageApiUrl")]
+        public string UnzerPaypageApiUrl { get; set; }
+
         [NopResourceDisplayName("Plugins.Payments.Unzer.Fields.UnzerApiKey")]
         [NoTrim]
         [DataType(DataType.Password)]        
