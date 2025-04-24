@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Unzer.Plugin.Payments.Unzer.Infrastructure;
 
@@ -12,7 +13,6 @@ namespace Unzer.Plugin.Payments.Unzer.Models.Api
         public PayPageType type { get; set; }
         public PayPageRecurrenceType recurrenceType { get; set; }
         public string orderId { get; set; }
-        public bool card3ds { get; set; }
         public string invoiceId { get; set; }
         public string shopName { get; set; }
         public Resources resources { get; set; }
@@ -20,7 +20,8 @@ namespace Unzer.Plugin.Payments.Unzer.Models.Api
         public PayPageCheckoutType checkoutType { get; set; }
         public Urls urls { get; set; }
         public Style style { get; set; }
-        public Paymentmethodsconfigs[] paymentMethodsConfigs { get; set; }
+        //public Paymentmethodsconfigs[] paymentMethodsConfigs { get; set; }
+        public JsonObject paymentMethodsConfigs { get; set; }
         public Riskdata risk { get; set; }
         public Customersettings customerSettings { get; set; }
         public string alias { get; set; }

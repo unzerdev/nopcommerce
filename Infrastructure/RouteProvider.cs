@@ -35,6 +35,10 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 pattern: "unzerpayment/unzerprepaymentcompleted/{model}",
                 defaults: new { controller = "UnzerCallback", action = "UnzerPrePaymentCompleted" });
 
+            endpointRouteBuilder.MapControllerRoute(name: UnzerPaymentDefaults.UnzerCancelOrderRouteName,
+                pattern: "unzerpayment/cancelorder",
+                defaults: new { controller = "UnzerCallback", action = "CancelOrder" });
+
         }
 
         /// <summary>

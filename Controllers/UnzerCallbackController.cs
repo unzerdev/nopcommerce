@@ -164,4 +164,17 @@ public class UnzerCallbackController : Controller
 
         return RedirectToRoute("CheckoutCompleted", new { orderId = order.Id });
     }
+
+    public async Task<IActionResult> CancelOrder()
+    {
+        var order = await _orderService.SearchOrdersAsync(storeId: (await _storeContext.GetCurrentStoreAsync()).Id, customerId: (await _workContext.GetCurrentCustomerAsync()).Id, pageSize: 1);
+        if (order.Any())
+        {
+            var curOrder = order.OrderByDescending(o => o.CreatedOnUtc).FirstOrDefault();
+            if (curOrder != null)
+                return RedirectToRoute("OrderDetails", new { orderId = curOrder.Id });
+        }
+
+        return RedirectToRoute("HomePage");
+    }
 }

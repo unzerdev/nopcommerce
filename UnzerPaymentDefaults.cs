@@ -31,6 +31,7 @@ namespace Unzer.Plugin.Payments.Unzer
         public static string CallBackUrlRouteName = "Plugin.Payments.Unzer.CallbackHandler";
         public static string UnzerPaymentStatusRouteName = "Plugin.Payments.Unzer.UnzerPaymentCompleted";
         public static string UnzerPrePaymentComplteRouteName = "Plugin.Payments.Unzer.UnzerPrePaymentCompleted";
+        public static string UnzerCancelOrderRouteName = "Plugin.Payments.Unzer.UnzerCancelOrder";
 
         public static string DevCallbackUrl = "https://webhook-test.com/25e2a12f616f335f7eaf8843a3de5e57";
         public static WebHookEventType[] CallbackEvents = new WebHookEventType[] { WebHookEventType.authorize, WebHookEventType.charge };

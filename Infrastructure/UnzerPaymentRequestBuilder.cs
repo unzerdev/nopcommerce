@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Nop.Core;
@@ -14,6 +15,7 @@ using Nop.Services.Media;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Services.Stores;
+using Unzer.Plugin.Payments.Unzer.Models;
 using Unzer.Plugin.Payments.Unzer.Models.Api;
 
 namespace Unzer.Plugin.Payments.Unzer.Infrastructure
@@ -127,8 +129,8 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             _urlHelper = _urlHelper == null ? _urlHelperFactory.GetUrlHelper(_actionContextAccessor.ActionContext) : _urlHelper;
 
             var shopUrl = await GetShopUrlAsync();
-
             var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
+            var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelOrderRouteName, null, _webHelper.GetCurrentRequestProtocol());
 
             var currentStore = _storeContext.GetCurrentStore();
 
@@ -159,15 +161,14 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 amount = orderTotal,
                 orderId = order.Id.ToString("D6"),
                 //TODO: Set selected type only if _unzerPaymentSettings.SelectedPaymentTypes.Count > 1
-                paymentMethodsConfigs = new Paymentmethodsconfigs[] { },
+                paymentMethodsConfigs = await BuildV2PaymentMethodsConfig(selectedPaymentMethod),
                 urls = new Urls
                 {
-                    returnCancel = "",
-                    returnFailure = "",
+                    returnCancel = cancelUrl,
+                    returnFailure = cancelUrl,
                     returnPending = "",
                     returnSuccess = returnUrl
                 },
-                card3ds = true,
                 style = new Style
                 {
                     logoImage = _unzerPaymentSettings.LogoImage,
@@ -179,7 +180,13 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                     customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
                     metadataId = _unzerPaymentSettings.UnzerMetadataId,
                     basketId = !string.IsNullOrEmpty(basketId) ? basketId : null
-                }
+                },
+                customerSettings = new Customersettings
+                {
+                    type = CustomerType.B2C
+                },
+                multiUse = false,
+                expiresAt = DateTime.UtcNow.AddHours(1),
             };
 
             return authReq;
@@ -242,8 +249,8 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             _urlHelper = _urlHelper == null ? _urlHelperFactory.GetUrlHelper(_actionContextAccessor.ActionContext) : _urlHelper;
 
             var shopUrl = await GetShopUrlAsync();
-
             var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
+            var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelOrderRouteName, null, _webHelper.GetCurrentRequestProtocol());
 
             var currentStore = _storeContext.GetCurrentStore();
 
@@ -263,7 +270,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             var selectedPaymentMethod = unzerPaymentType != null ? unzerPaymentType.UnzerName : order.PaymentMethodSystemName;
 
             var customer = await _customerService.GetCustomerByIdAsync(order.CustomerId);
-            var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
+            //var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
 
             var authReq = new CreatePayPageRequest
             {                
@@ -274,15 +281,14 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 amount = orderTotal,
                 orderId = order.Id.ToString("D6"),
                 //TODO: Set selected type only if _unzerPaymentSettings.SelectedPaymentTypes.Count > 1
-                paymentMethodsConfigs = new Paymentmethodsconfigs[] { },
+                paymentMethodsConfigs = await BuildV2PaymentMethodsConfig(selectedPaymentMethod),
                 urls = new Urls
                 {
-                    returnCancel = "",
-                    returnFailure = "",
+                    returnCancel = cancelUrl,
+                    returnFailure = cancelUrl,
                     returnPending = "",
                     returnSuccess = returnUrl
                 },
-                card3ds = true,
                 style = new Style
                 {
                     logoImage = _unzerPaymentSettings.LogoImage,
@@ -294,7 +300,13 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                     customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
                     metadataId = _unzerPaymentSettings.UnzerMetadataId,
                     basketId = !string.IsNullOrEmpty(basketId) ? basketId : null
-                }
+                },
+                customerSettings = new Customersettings
+                {
+                    type = CustomerType.B2C
+                },
+                multiUse = false,
+                expiresAt = DateTime.UtcNow.AddHours(1),
             };
 
             return authReq;
@@ -675,6 +687,50 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 
             return setWebHook;
         }
+
+        private async Task<JsonObject> BuildV2PaymentMethodsConfig(string selectedPaymentMethod)
+        {
+            var config = new JsonObject();
+
+            var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
+            if(excludeTypes.Any())
+            {
+                config = new JsonObject
+                {
+                    ["default"] = new JsonObject
+                    {
+                        ["enabled"] = true,
+                        ["credentialOnFile"] = true
+                    }
+                };
+            }
+            else
+            {
+                config = new JsonObject
+                {
+                    ["default"] = new JsonObject
+                    {
+                        ["enabled"] = false,
+                        ["credentialOnFile"] = false
+                    }
+                    
+
+                };
+
+                foreach (var item in excludeTypes)
+                {
+                    config.Add(item, new JsonObject
+                    {
+                        ["enabled"] = false,
+                        ["credentialOnFile"] = true,
+                        ["order"] = 0,
+                    });
+                }
+            }
+            
+            return config;
+        }
+
         private async Task<V2Basketitem[]> ReadBasketItemsAsync(Order order, IList<OrderItem> orderItems, int languageId)
         {
             var basketItems = new List<V2Basketitem>();
