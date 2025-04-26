@@ -7,7 +7,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "alipay",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Apple Pay",
@@ -17,7 +24,14 @@
     "SupportAuthurize": true,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "applepay",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Bancontact",
@@ -27,7 +41,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "bancontact",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Card",
@@ -37,7 +58,16 @@
     "SupportAuthurize": true,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "cards",
+      "Attributes": [
+        "Enabled",
+        "Order",
+        "credentialOnFile",
+        "exemption"
+      ]
+    }
   },
   {
     "Name": "EPS",
@@ -47,7 +77,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "eps",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Google Pay",
@@ -57,7 +94,14 @@
     "SupportAuthurize": true,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "googlepay",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "iDEAL",
@@ -66,7 +110,14 @@
     "UnzerName": "ideal",
     "SupportAuthurize": false,
     "SupportCharge": true,
-    "Deprecated": false
+    "Deprecated": false,
+    "PaypageInfo": {
+      "Name": "ideal",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Klarna",
@@ -76,7 +127,14 @@
     "SupportAuthurize": true,
     "SupportCharge": false,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "klarna",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "PayPal",
@@ -86,7 +144,15 @@
     "SupportAuthurize": true,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "paypal",
+      "Attributes": [
+        "Enabled",
+        "Order",
+        "credentialOnFile"
+      ]
+    }
   },
   {
     "Name": "PayU",
@@ -96,7 +162,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "payu",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Przelewy24",
@@ -106,7 +179,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "przelewy24",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "PostFinance card",
@@ -135,7 +215,7 @@
     "UnzerName": "sofort",
     "SupportAuthurize": false,
     "SupportCharge": true,
-    "Deprecated": false,
+    "Deprecated": true,
     "Prepayment": false
   },
   {
@@ -146,7 +226,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "twint",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Unzer Bank Transfer",
@@ -156,7 +243,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "openbankingpis",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Unzer Direct Debit",
@@ -166,7 +260,15 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "sepaDirectDebit",
+      "Attributes": [
+        "Enabled",
+        "Order",
+        "credentialOnFile"
+      ]
+    }
   },
   {
     "Name": "Direct Debit Secured",
@@ -176,7 +278,15 @@
     "SupportAuthurize": true,
     "SupportCharge": false,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "paylaterDirectDebit",
+      "Attributes": [
+        "Enabled",
+        "Order",
+        "label"
+      ]
+    }
   },
   {
     "Name": "Unzer Installment",
@@ -186,7 +296,15 @@
     "SupportAuthurize": true,
     "SupportCharge": false,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "paylaterInstallment",
+      "Attributes": [
+        "Enabled",
+        "Order",
+        "label"
+      ]
+    }
   },
   {
     "Name": "Unzer Invoice",
@@ -196,7 +314,15 @@
     "SupportAuthurize": true,
     "SupportCharge": false,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "paylaterInvoice",
+      "Attributes": [
+        "Enabled",
+        "Order",
+        "label"
+      ]
+    }
   },
   {
     "Name": "Unzer Prepayment",
@@ -206,7 +332,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": true
+    "Prepayment": true,
+    "PaypageInfo": {
+      "Name": "prepayment",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "WeChat Pay",
@@ -216,7 +349,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "wechatpay",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Direct Debit Secured",

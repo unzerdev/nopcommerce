@@ -9,4 +9,11 @@ public class UnzerPaymentType
     public bool SupportCharge { get; set; }
     public bool Deprecated { get; set; }
     public bool Prepayment { get; set; }
+    public PaypageInfo PaypageInfo { get; set; }
+}
+
+public class PaypageInfo
+{
+    public string Name { get; set; }
+    public string[] Attributtes { get; set; }
 }
