@@ -85,5 +85,25 @@ namespace Unzer.Plugin.Payments.Unzer
 
             return unzerPaymentType;
         }
+
+        public static UnzerPaymentType ReadPaymentTypeByUnzerName(string unzerName)
+        {
+            var unzerPaymentType = UnzerPaymentTypes.SingleOrDefault(t => t.UnzerName == unzerName);
+            if (unzerPaymentType == null)
+            {
+                return new UnzerPaymentType
+                {
+                    Name = "Unzer",
+                    ShortName = "unz",
+                    UnzerName = unzerName,
+                    SystemName = "Payments.Unzer",
+                    SupportAuthurize = true,
+                    SupportCharge = true,
+                    Deprecated = false
+                };
+            }
+
+            return unzerPaymentType;
+        }
     }
 }

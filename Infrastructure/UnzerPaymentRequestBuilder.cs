@@ -273,7 +273,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             //var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
 
             var authReq = new CreatePayPageRequest
-            {                
+            {
                 mode = PayPageMode.charge,
                 type = PayPageType.hosted,
                 checkoutType = PayPageCheckoutType.payment_only,
@@ -693,41 +693,46 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             var config = new JsonObject();
 
             var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
-            if(excludeTypes.Any())
+            var defaultSelected = excludeTypes.Any();
+            config = new JsonObject
             {
-                config = new JsonObject
+                ["default"] = new JsonObject
                 {
-                    ["default"] = new JsonObject
+                    ["enabled"] = defaultSelected,
+                    ["credentialOnFile"] = defaultSelected
+                }
+            };
+
+            var commonAttr = new string[] { "enabled", "order" };
+            foreach (var item in excludeTypes)
+            {
+                var paymentType = UnzerPaymentDefaults.ReadPaymentTypeByUnzerName(item);
+                if (paymentType.Name == "Unzer" && paymentType.UnzerName == "unz")
+                    continue;
+
+                var paymentInfo = new JsonObject
+                {
+                    [paymentType.PaypageInfo.Name] = new JsonObject
                     {
                         ["enabled"] = true,
-                        ["credentialOnFile"] = true
-                    }
-                };
-            }
-            else
-            {
-                config = new JsonObject
-                {
-                    ["default"] = new JsonObject
-                    {
-                        ["enabled"] = false,
-                        ["credentialOnFile"] = false
-                    }
-                    
-
-                };
-
-                foreach (var item in excludeTypes)
-                {
-                    config.Add(item, new JsonObject
-                    {
-                        ["enabled"] = false,
-                        ["credentialOnFile"] = true,
                         ["order"] = 0,
-                    });
+                    }
+                };
+
+                foreach (var attr in paymentType.PaypageInfo.Attributtes)
+                {
+                    if (!commonAttr.Contains(attr))
+                    {
+                        if(attr == "credentialOnFile")
+                            paymentInfo.Add(attr, true);
+                        else if (attr == "exemption")
+                            paymentInfo.Add(attr, "");
+                        else if (attr == "label")
+                            paymentInfo.Add(attr, "");
+                    }
                 }
             }
-            
+
             return config;
         }
 
