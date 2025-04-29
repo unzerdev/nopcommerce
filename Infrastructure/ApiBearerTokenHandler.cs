@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Buffers.Text;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -22,6 +23,8 @@ public class ApiBearerTokenHandler : DelegatingHandler
 
         _unzerPaymentSettings = unzerPaymentSettings;
         _logger = logger;
+
+        _tokenClient.BaseAddress = new Uri(UnzerPaymentDefaults.UnzerTokenUrl);        
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,CancellationToken cancellationToken)
