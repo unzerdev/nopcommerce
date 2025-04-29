@@ -351,7 +351,6 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             return captReq;
         }
 
-
         public async Task<CreateCaptureRequest> BuildCaptureRequestAsync(Order order, decimal amount)
         {
             var captureAmount = _currencyService.ConvertCurrency(amount, order.CurrencyRate);
@@ -701,36 +700,35 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                     ["enabled"] = defaultSelected,
                     ["credentialOnFile"] = defaultSelected
                 }
-            };
+            };            
 
             var commonAttr = new string[] { "enabled", "order" };
             foreach (var item in excludeTypes)
             {
                 var paymentType = UnzerPaymentDefaults.ReadPaymentTypeByUnzerName(item);
-                if (paymentType.Name == "Unzer" && paymentType.UnzerName == "unz")
+                if (paymentType.PaypageInfo == null || (paymentType.Name == "Unzer" && paymentType.UnzerName == "unz"))
                     continue;
 
-                var paymentInfo = new JsonObject
+                var paymentAttr = new JsonObject
                 {
-                    [paymentType.PaypageInfo.Name] = new JsonObject
-                    {
-                        ["enabled"] = true,
-                        ["order"] = 0,
-                    }
+                    ["enabled"] = false,
+                    ["order"] = 0,
                 };
 
-                foreach (var attr in paymentType.PaypageInfo.Attributtes)
+                foreach (var attr in paymentType.PaypageInfo.Attributes)
                 {
                     if (!commonAttr.Contains(attr))
                     {
                         if(attr == "credentialOnFile")
-                            paymentInfo.Add(attr, true);
+                            paymentAttr.Add(attr, true);
                         else if (attr == "exemption")
-                            paymentInfo.Add(attr, "");
+                            paymentAttr.Add(attr, "");
                         else if (attr == "label")
-                            paymentInfo.Add(attr, "");
+                            paymentAttr.Add(attr, "");
                     }
                 }
+
+                config[paymentType.PaypageInfo.Name] = paymentAttr;
             }
 
             return config;

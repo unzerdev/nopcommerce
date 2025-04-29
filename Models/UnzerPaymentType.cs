@@ -14,6 +14,10 @@ public class UnzerPaymentType
 
 public class PaypageInfo
 {
+    public PaypageInfo()
+    {
+        Attributes = Array.Empty<string>();
+    }
     public string Name { get; set; }
-    public string[] Attributtes { get; set; }
+    public string[] Attributes { get; set; }
 }

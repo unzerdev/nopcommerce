@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 using Nop.Core.Infrastructure;
 using Unzer.Plugin.Payments.Unzer.Infrastructure;
 using Unzer.Plugin.Payments.Unzer.Models;
@@ -18,9 +19,9 @@ namespace Unzer.Plugin.Payments.Unzer
         public static string MetadataPluginType = "unzer/nopcommerce";
         public static string MetadataShopType = "NopCommerce";
 
-        public static string UnzerApiUrl => _unzerPaymentSettings.UnzerApiBaseUrl ?? "https://api.unzer.com/";
-        public static string UnzerPaypageApiUrl => _unzerPaymentSettings.UnzerPaypageApiUrl ?? "https://paypage.test.unzer.com/";
-        public static string UnzerTokenUrl => _unzerPaymentSettings.UnzerTokenUrl ?? "https://token.upcgw.com/v1/auth/token";
+        public static string UnzerApiUrl => string.IsNullOrEmpty(_unzerPaymentSettings.UnzerApiBaseUrl) ? "https://api.unzer.com/" : _unzerPaymentSettings.UnzerApiBaseUrl;
+        public static string UnzerPaypageApiUrl => string.IsNullOrEmpty(_unzerPaymentSettings.UnzerPaypageApiUrl) ? "https://paypage.test.unzer.com/" : _unzerPaymentSettings.UnzerPaypageApiUrl;
+        public static string UnzerTokenUrl => string.IsNullOrEmpty(_unzerPaymentSettings.UnzerTokenUrl) ? "https://token.test.upcgw.com/v1/auth/token" : _unzerPaymentSettings.UnzerTokenUrl;
         
         public static string[] AllowedUrls = new string[] { "api.unzer.com", "api.heidelpay.com" };
         public static string ConfigurationRouteName => "Plugin.Payments.Unzer.Configure";

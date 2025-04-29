@@ -38,10 +38,12 @@ namespace Unzer.Plugin.Payments.Unzer.Services
         public async Task<CreatePaymentResponse> CreateAuthPayment(Order order, bool isRecurring, string unzerCustomerId, string basketId)
         {
             var status = new CreatePaymentResponse { Success = false, StatusMessage = string.Empty};
-            var authPayPageReq = await _unzerPayRequestBuilder.BuildAuthorizePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
+            var authPayPageReq = await _unzerPayRequestBuilder.BuildV2AuthorizePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
+            //var authPayPageReq = await _unzerPayRequestBuilder.BuildAuthorizePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
 
-            var response = await _unzerApiHttpClient.RequestAsync<CreateAuthorizePayPageRequest, AuthorizePayPageResponse>(authPayPageReq);
-            if(response.IsError)
+            var response = await _unzerApiHttpClient.RequestAsync<CreatePayPageRequest, PayPageResponse>(authPayPageReq);
+            //var response = await _unzerApiHttpClient.RequestAsync<CreateAuthorizePayPageRequest, AuthorizePayPageResponse>(authPayPageReq);
+            if (response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.CreateAuthPayment: Failed with call to Unzer API Client with {errMsg}");
@@ -53,7 +55,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             status.Success = response.IsSuccess;
             status.StatusMessage = "Payment created successfull";
             status.RedirectUrl = response.redirectUrl;
-            status.PaymentId = response.resources.paymentId;
+            //status.PaymentId = response.resources.paymentId;
             return status;
         }
 
@@ -66,9 +68,10 @@ namespace Unzer.Plugin.Payments.Unzer.Services
         public async Task<CreatePaymentResponse> CreateCapturePayment(Order order, bool isRecurring, string unzerCustomerId, string basketId)
         {
             var status = new CreatePaymentResponse { Success = false, StatusMessage = string.Empty };
-            var authPayPageReq = await _unzerPayRequestBuilder.BuildCapturePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
+            var authPayPageReq = await _unzerPayRequestBuilder.BuildV2CapturePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
+            //var authPayPageReq = await _unzerPayRequestBuilder.BuildCapturePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
 
-            var response = await _unzerApiHttpClient.RequestAsync<CreateCapturePayPageRequest, CapturePayPageResponse>(authPayPageReq);
+            var response = await _unzerApiHttpClient.RequestAsync<CreatePayPageRequest, PayPageResponse>(authPayPageReq);
             if (response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse .Errors.Select(e => e.merchantMessage)) : "";
@@ -81,7 +84,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             status.Success = response.IsSuccess;
             status.StatusMessage = "Payment created successfull";
             status.RedirectUrl = response.redirectUrl;
-            status.PaymentId = response.resources.paymentId;
+            //status.PaymentId = response.resources.paymentId;
             return status;
         }
 
