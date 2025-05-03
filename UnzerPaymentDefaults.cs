@@ -21,7 +21,7 @@ namespace Unzer.Plugin.Payments.Unzer
 
         public static string UnzerApiUrl => string.IsNullOrEmpty(_unzerPaymentSettings.UnzerApiBaseUrl) ? "https://api.unzer.com/" : _unzerPaymentSettings.UnzerApiBaseUrl;
         public static string UnzerPaypageApiUrl => string.IsNullOrEmpty(_unzerPaymentSettings.UnzerPaypageApiUrl) ? "https://paypage.test.unzer.com/" : _unzerPaymentSettings.UnzerPaypageApiUrl;
-        public static string UnzerTokenUrl => string.IsNullOrEmpty(_unzerPaymentSettings.UnzerTokenUrl) ? "https://token.test.upcgw.com/" : _unzerPaymentSettings.UnzerTokenUrl;
+        public static string UnzerTokenUrl => string.IsNullOrEmpty(_unzerPaymentSettings.UnzerTokenUrl) ? "https://token.test.upcgw.com" : _unzerPaymentSettings.UnzerTokenUrl;
         
         public static string[] AllowedUrls = new string[] { "api.unzer.com", "api.heidelpay.com" };
         public static string ConfigurationRouteName => "Plugin.Payments.Unzer.Configure";

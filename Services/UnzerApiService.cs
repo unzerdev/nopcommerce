@@ -45,8 +45,8 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             //var response = await _unzerApiHttpClient.RequestAsync<CreateAuthorizePayPageRequest, AuthorizePayPageResponse>(authPayPageReq);
             if (response.IsError)
             {
-                var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
-                await _logger.ErrorAsync($"UnzerApiService.CreateAuthPayment: Failed with call to Unzer API Client with {errMsg}");
+                var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
+                await _logger.ErrorAsync($"UnzerApiService.CreateAuthPayment(V2): Failed with call to Unzer API Client with {errMsg}");
                 status.StatusMessage = errMsg;
                 status.Success = response.IsSuccess;
                 return status;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nop.Core.Infrastructure;
@@ -21,7 +22,6 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<ApiBearerTokenHandler>();
-            services.AddHttpClient<ApiBearerTokenHandler>().WithProxy();
 
             services.AddHttpClient<UnzerApiHttpClient>()
                 .AddHttpMessageHandler<ApiBearerTokenHandler>()

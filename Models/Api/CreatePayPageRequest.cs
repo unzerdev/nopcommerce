@@ -15,7 +15,7 @@ namespace Unzer.Plugin.Payments.Unzer.Models.Api
         public string orderId { get; set; }
         public string invoiceId { get; set; }
         public string shopName { get; set; }
-        public Resources resources { get; set; }
+        public V2Resources resources { get; set; }
         public string paymentReference { get; set; }
         public PayPageCheckoutType checkoutType { get; set; }
         public Urls urls { get; set; }
@@ -25,8 +25,8 @@ namespace Unzer.Plugin.Payments.Unzer.Models.Api
         public Riskdata risk { get; set; }
         public Customersettings customerSettings { get; set; }
         public string alias { get; set; }
-        public bool multiUse { get; set; }
-        public DateTime expiresAt { get; set; }
+        public bool? multiUse { get; set; }
+        public DateTime? expiresAt { get; set; }
         public AmountSettings amountSettings { get; set; }
 
         [JsonIgnore]
@@ -88,4 +88,10 @@ namespace Unzer.Plugin.Payments.Unzer.Models.Api
         public string maximum { get; set; }
     }
 
+    public class V2Resources
+    {
+        public string customerId { get; set; }
+        public string metadataId { get; set; }
+        public string basketId { get; set; }
+    }
 }

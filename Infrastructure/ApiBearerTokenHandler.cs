@@ -1,5 +1,4 @@
-﻿using System.Buffers.Text;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -10,38 +9,32 @@ using Unzer.Plugin.Payments.Unzer.Models.Api;
 namespace Unzer.Plugin.Payments.Unzer.Infrastructure;
 public class ApiBearerTokenHandler : DelegatingHandler
 {
-    private readonly HttpClient _tokenClient;
     private readonly UnzerPaymentSettings _unzerPaymentSettings;
     private readonly ILogger _logger;
     
     private JwtSecurityToken? _accessToken;
 
-    public ApiBearerTokenHandler(HttpClient tokenClient, UnzerPaymentSettings unzerPaymentSettings, ILogger logger)
+    public ApiBearerTokenHandler(UnzerPaymentSettings unzerPaymentSettings, ILogger logger)
     {
-        _tokenClient = tokenClient
-            ?? throw new ArgumentNullException(nameof(tokenClient));
-
         _unzerPaymentSettings = unzerPaymentSettings;
         _logger = logger;
-
-        _tokenClient.BaseAddress = new Uri(UnzerPaymentDefaults.UnzerTokenUrl);        
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(_unzerPaymentSettings.UnzerApiKey))
+            throw new ArgumentNullException(nameof(_unzerPaymentSettings.UnzerApiKey));
+
         if (!UnzerPaymentDefaults.UseBearerTokenUrls.Contains(request.RequestUri.AbsolutePath))
             return await base.SendAsync(request, cancellationToken);
 
         if (_accessToken == null || _accessToken.ValidTo < DateTime.Now)
         {
-            if (!string.IsNullOrEmpty(_unzerPaymentSettings.UnzerApiKey))
-            {
-                var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:", _unzerPaymentSettings.UnzerApiKey)));
-                _tokenClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", string.Format("Basic {0}", credentials));
-            }
+            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:", _unzerPaymentSettings.UnzerApiKey)));
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, new Uri($"{UnzerPaymentDefaults.UnzerTokenUrl}/v1/auth/token"));
+            msg.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
-            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, "/v1/auth/token");
-            var response = await _tokenClient.SendAsync(msg, cancellationToken);
+            var response = await base.SendAsync(msg, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 await _logger.WarningAsync($"ApiBearerTokenHandler: Requsesting new access token failed with {response.ReasonPhrase}");

@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 using Microsoft.Net.Http.Headers;
 using Nop.Core;
 using Nop.Services.Logging;
@@ -50,8 +52,14 @@ namespace Unzer.Plugin.Payments.Unzer.Services
 
         public async Task<TResponse> RequestAsync<TRequest, TResponse>(TRequest request) where TRequest : IUnzerApiRequest where TResponse : UnzerApiResponse
         {
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+            };
+            options.Converters.Add(new JsonStringEnumConverter()); // you can add multiple converters
+
             //prepare request parameters
-            var requestString = JsonSerializer.Serialize(request);
+            var requestString = JsonSerializer.Serialize(request, options);
             var requestContent = new StringContent(requestString, Encoding.UTF8, MimeTypes.ApplicationJson);
 
             var requestMessage = new HttpRequestMessage(new HttpMethod(request.Method), new Uri(new Uri(request.BaseUrl), request.Path))
@@ -61,7 +69,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
 
             //execute request and get result
             var httpResponse = await _httpClient.SendAsync(requestMessage);
-            var responseString = await httpResponse.Content.ReadAsStringAsync();
+            var responseString = await httpResponse.Content.ReadAsStringAsync();            
 
             var result = JsonSerializer.Deserialize<TResponse>(responseString ?? string.Empty);
 
@@ -69,7 +77,10 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             { 
                 result.HttpStatusCode = httpResponse.StatusCode;
                 result.IsError = true;
-                result.ErrorResponse = JsonSerializer.Deserialize<UnzerApiErrorResponse>(responseString ?? string.Empty);                
+                result.ErrorResponse = JsonSerializer.Deserialize<UnzerApiErrorResponse>(responseString ?? string.Empty);
+
+                await _logger.InformationAsync($"UnzerApiHttpClient.RequestAsync Failed with Respones content: {responseString}");
+
                 return result;
             }
             
