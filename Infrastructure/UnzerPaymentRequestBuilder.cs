@@ -7,7 +7,6 @@ using Nop.Core.Domain;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Orders;
-using Nop.Services.Common;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Html;
@@ -16,14 +15,12 @@ using Nop.Services.Media;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Services.Stores;
-using Unzer.Plugin.Payments.Unzer.Models;
 using Unzer.Plugin.Payments.Unzer.Models.Api;
 
 namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 {
     public class UnzerPaymentRequestBuilder
     {
-        private readonly IAddressService _addressService;
         private readonly ICountryService _countryService;
         private readonly IStateProvinceService _stateService;
         private readonly IOrderService _orderService;
@@ -47,9 +44,8 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 
         private IUrlHelper _urlHelper;
 
-        public UnzerPaymentRequestBuilder(IAddressService addressService, ICountryService countryService, IStateProvinceService stateService, IOrderService orderService, ICurrencyService currencyService, IStoreService storeService, IStoreContext storeContext, IWorkContext workContext, ShoppingCartSettings shoppingCartSettings, UnzerPaymentSettings unzserPaymentSettings, IPaymentPluginManager paymentPluginManager, ICustomerService customerService, ILanguageService languageService, IUrlHelperFactory urlHelperFactory, IWebHelper webHelper, ILocalizationService localizationService, IHtmlFormatter htmlFormatter, IPictureService pictureService, StoreInformationSettings storeInformationSettings, IActionContextAccessor actionContextAccessor)
+        public UnzerPaymentRequestBuilder(ICountryService countryService, IStateProvinceService stateService, IOrderService orderService, ICurrencyService currencyService, IStoreService storeService, IStoreContext storeContext, IWorkContext workContext, ShoppingCartSettings shoppingCartSettings, UnzerPaymentSettings unzserPaymentSettings, IPaymentPluginManager paymentPluginManager, ICustomerService customerService, ILanguageService languageService, IUrlHelperFactory urlHelperFactory, IWebHelper webHelper, ILocalizationService localizationService, IHtmlFormatter htmlFormatter, IPictureService pictureService, StoreInformationSettings storeInformationSettings, IActionContextAccessor actionContextAccessor)
         {
-            _addressService = addressService;
             _countryService = countryService;
             _stateService = stateService;
             _orderService = orderService;
@@ -133,7 +129,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 
             var shopUrl = await GetShopUrlAsync();
             var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
-            var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelOrderRouteName, null, _webHelper.GetCurrentRequestProtocol());
+            var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelPaymentRouteName, null, _webHelper.GetCurrentRequestProtocol());
             var pendingUrl = _urlHelper.RouteUrl("OrderDetails", new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
 
             var storeLogoPict = await _pictureService.GetPictureByIdAsync(_storeInformationSettings.LogoPictureId);
@@ -253,7 +249,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 
             var shopUrl = await GetShopUrlAsync();
             var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
-            var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelOrderRouteName, null, _webHelper.GetCurrentRequestProtocol());
+            var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelPaymentRouteName, null, _webHelper.GetCurrentRequestProtocol());
             var pendingUrl = _urlHelper.RouteUrl("OrderDetails", new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
 
             var storeLogoPict = await _pictureService.GetPictureByIdAsync(_storeInformationSettings.LogoPictureId);

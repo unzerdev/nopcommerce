@@ -3,7 +3,6 @@ using Nop.Core;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Services.Configuration;
-using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Orders;
@@ -19,7 +18,6 @@ using Nop.Services.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Nop.Services.Catalog;
 using Unzer.Plugin.Payments.Unzer.Models;
 
 namespace Unzer.Plugin.Payments.Unzer
@@ -36,7 +34,6 @@ namespace Unzer.Plugin.Payments.Unzer
         private readonly ILogger _logger;
         private readonly IStoreContext _storeContext;
         private readonly IStoreService _storeService;
-        private readonly UnzerPaymentRequestBuilder _unzerPayRequestBuilder;
         private readonly ICustomerService _customerService;
         private readonly IAddressService _addressService;
         private readonly IUrlHelperFactory _urlHelperFactory;
@@ -46,7 +43,7 @@ namespace Unzer.Plugin.Payments.Unzer
         private IHttpContextAccessor _httpContextAccessor;
         private IUrlHelper _urlHelper;
 
-        public UnzerPaymentMethod(UnzerPaymentSettings unzerPaymentSettings, ISettingService settingService, IOrderTotalCalculationService orderTotalCalculationService, IOrderService orderService, IWebHelper webHelper, IUnzerApiService unzerApiService, ILocalizationService localizationService, ILogger logger, IStoreService storeService, IStoreContext storeContext, UnzerPaymentRequestBuilder unzerPayRequestBuilder, IHttpContextAccessor httpContextAccessor, ICustomerService customerService, IAddressService addressService, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor, ICallEventHandler<CaptureEventHandler> captEventHandle)
+        public UnzerPaymentMethod(UnzerPaymentSettings unzerPaymentSettings, ISettingService settingService, IOrderTotalCalculationService orderTotalCalculationService, IOrderService orderService, IWebHelper webHelper, IUnzerApiService unzerApiService, ILocalizationService localizationService, ILogger logger, IStoreService storeService, IStoreContext storeContext, IHttpContextAccessor httpContextAccessor, ICustomerService customerService, IAddressService addressService, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor, ICallEventHandler<CaptureEventHandler> captEventHandle)
         {
             _unzerPaymentSettings = unzerPaymentSettings;
             _settingService = settingService;  
@@ -58,7 +55,6 @@ namespace Unzer.Plugin.Payments.Unzer
             _logger = logger;
             _storeService = storeService;
             _storeContext = storeContext;
-            _unzerPayRequestBuilder = unzerPayRequestBuilder;
             _httpContextAccessor = httpContextAccessor;
             _customerService = customerService;
             _addressService = addressService;

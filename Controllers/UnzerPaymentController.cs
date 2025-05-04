@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core;
-using Nop.Core.Infrastructure;
 using Nop.Services;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Messages;
-using Nop.Services.ScheduleTasks;
 using Nop.Services.Security;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
@@ -26,33 +24,24 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
     {
         private readonly ILocalizationService _localizationService;
         private readonly INotificationService _notificationService;
-        private readonly IPermissionService _permissionService;
-        private readonly IScheduleTaskService _scheduleTaskService;
         private readonly ISettingService _settingService;
         private readonly IStoreContext _storeContext;
         private readonly IUnzerApiService _unzerApiService;
         private readonly ILogger _logger;
-        private readonly INopFileProvider _fileProvider;
 
         public UnzerPaymentController(ILocalizationService localizationService,
             INotificationService notificationService,
-            IPermissionService permissionService,
-            IScheduleTaskService scheduleTaskService,
             ISettingService settingService,
             IStoreContext storeContext,
             IUnzerApiService unzerApiService,
-            ILogger logger,
-            INopFileProvider fileProvider)
+            ILogger logger)
         {
             _localizationService = localizationService;
             _notificationService = notificationService;
-            _permissionService = permissionService;
-            _scheduleTaskService = scheduleTaskService;
             _settingService = settingService;
             _storeContext = storeContext;
             _unzerApiService = unzerApiService;
             _logger = logger;
-            _fileProvider = fileProvider;
         }
 
         [CheckPermission(StandardPermission.Configuration.MANAGE_PAYMENT_METHODS)]
@@ -114,8 +103,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
         [CheckPermission(StandardPermission.Configuration.MANAGE_PAYMENT_METHODS)]
         public async Task<IActionResult> Configure(ConfigurationModel model)
         {
-            //if (!ModelState.IsValid)
-            //    return await Configure();
+            if (!ModelState.IsValid)
+                return await Configure();
 
             var storeId = await _storeContext.GetActiveStoreScopeConfigurationAsync();
             var settings = await _settingService.LoadSettingAsync<UnzerPaymentSettings>(storeId);

@@ -12,16 +12,12 @@ namespace Unzer.Plugin.Payments.Unzer.Services
     public class UnzerApiService : IUnzerApiService
     {
         private readonly UnzerApiHttpClient _unzerApiHttpClient;
-        private UnzerPaymentSettings _unzerPaymentSettings;
         private readonly UnzerPaymentRequestBuilder _unzerPayRequestBuilder;
         private readonly ILogger _logger;
 
-        private string _credentials;
-
-        public UnzerApiService(UnzerApiHttpClient httpClient, UnzerPaymentSettings unzerPaymentSettings, UnzerPaymentRequestBuilder unzerPayRequestBuilder, ILogger logger)
+        public UnzerApiService(UnzerApiHttpClient httpClient, UnzerPaymentRequestBuilder unzerPayRequestBuilder, ILogger logger)
         {
             _unzerApiHttpClient = httpClient;  
-            _unzerPaymentSettings = unzerPaymentSettings;
             _unzerPayRequestBuilder = unzerPayRequestBuilder;
             _logger = logger;
         }
@@ -30,7 +26,6 @@ namespace Unzer.Plugin.Payments.Unzer.Services
         {
             set
             {
-                _unzerPaymentSettings = value;
                 _unzerApiHttpClient.UnzerPaymentSettings = value;
             }
         }
@@ -39,10 +34,8 @@ namespace Unzer.Plugin.Payments.Unzer.Services
         {
             var status = new CreatePaymentResponse { Success = false, StatusMessage = string.Empty};
             var authPayPageReq = await _unzerPayRequestBuilder.BuildV2AuthorizePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
-            //var authPayPageReq = await _unzerPayRequestBuilder.BuildAuthorizePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreatePayPageRequest, PayPageResponse>(authPayPageReq);
-            //var response = await _unzerApiHttpClient.RequestAsync<CreateAuthorizePayPageRequest, AuthorizePayPageResponse>(authPayPageReq);
             if (response.IsError)
             {
                 var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
@@ -69,7 +62,6 @@ namespace Unzer.Plugin.Payments.Unzer.Services
         {
             var status = new CreatePaymentResponse { Success = false, StatusMessage = string.Empty };
             var authPayPageReq = await _unzerPayRequestBuilder.BuildV2CapturePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
-            //var authPayPageReq = await _unzerPayRequestBuilder.BuildCapturePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreatePayPageRequest, PayPageResponse>(authPayPageReq);
             if (response.IsError)

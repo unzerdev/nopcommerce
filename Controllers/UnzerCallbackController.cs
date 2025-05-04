@@ -4,7 +4,6 @@ using Nop.Core;
 using Nop.Core.Domain.Logging;
 using Nop.Core.Domain.Orders;
 using Nop.Services.Common;
-using Nop.Services.Customers;
 using Nop.Services.Logging;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
@@ -21,9 +20,6 @@ public class UnzerCallbackController : Controller
     private readonly ILogger _logger;
     private readonly IWorkContext _workContext;
     private readonly IStoreContext _storeContext;
-    private readonly IUnzerApiService _unzerApiService;
-    private readonly ICustomerService _customerService;
-    private readonly OrderSettings _orderSettings;
     private readonly IGenericAttributeService _genericAttributeService;
     private readonly ICallEventHandler<AuthorizeEventHandler> _authEventHandler;
     private readonly ICallEventHandler<CaptureEventHandler> _captEventHandler;
@@ -34,8 +30,6 @@ public class UnzerCallbackController : Controller
         UnzerPaymentSettings unzerSettings,
         ILogger logger, IWorkContext workContext,
         IStoreContext storeContext,
-        IUnzerApiService unzerApiService,
-        ICustomerService customerService,
         OrderSettings orderSettings,
         IGenericAttributeService genericAttributeService,
         ICallEventHandler<AuthorizeEventHandler> authEventHandler,
@@ -47,8 +41,6 @@ public class UnzerCallbackController : Controller
         _logger = logger;
         _workContext = workContext;
         _storeContext = storeContext;
-        _unzerApiService = unzerApiService;
-        _customerService = customerService;
         _genericAttributeService = genericAttributeService;
         _authEventHandler = authEventHandler;
         _captEventHandler = captEventHandler;
@@ -161,7 +153,8 @@ public class UnzerCallbackController : Controller
         return RedirectToRoute("CheckoutCompleted", new { orderId = order.Id });
     }
 
-    public async Task<IActionResult> CancelOrder()
+    [HttpGet]
+    public async Task<IActionResult> CancelPayment()
     {
         var order = await _orderService.SearchOrdersAsync(storeId: (await _storeContext.GetCurrentStoreAsync()).Id, customerId: (await _workContext.GetCurrentCustomerAsync()).Id, pageSize: 1);
         if (order.Any())
