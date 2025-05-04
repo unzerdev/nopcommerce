@@ -747,7 +747,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                         if(attr == "credentialOnFile")
                             paymentAttr.Add(attr, true);
                         else if (attr == "exemption")
-                            paymentAttr.Add(attr, "");
+                            paymentAttr.Add(attr, "lvp");
                         else if (attr == "label")
                             paymentAttr.Add(attr, "");
                     }
