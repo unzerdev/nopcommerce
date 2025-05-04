@@ -295,6 +295,7 @@ namespace Unzer.Plugin.Payments.Unzer
             {
                 UnzerApiBaseUrl = UnzerPaymentDefaults.UnzerApiUrl,
                 UnzerTokenUrl = UnzerPaymentDefaults.UnzerTokenUrl,
+                UnzerPaypageApiUrl = UnzerPaymentDefaults.UnzerPaypageApiUrl,
                 UnzerApiKey = UnzerPaymentDefaults.DefaultApiKeySetting,
                 ShopUrl = (await _storeContext.GetCurrentStoreAsync()).Url,
                 LogoImage = string.Empty,
@@ -418,12 +419,19 @@ namespace Unzer.Plugin.Payments.Unzer
                 }
             }
 
-            if(targetVersion == "2.10.0")
+            if (targetVersion == "2.10.0")
             {
+                _unzerPaymentSettings.UnzerTokenUrl = UnzerPaymentDefaults.UnzerTokenUrl;
+                _unzerPaymentSettings.UnzerPaypageApiUrl = UnzerPaymentDefaults.UnzerPaypageApiUrl;
+
+                await _settingService.SaveSettingAsync(_unzerPaymentSettings);
+
                 await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
                 {
                     ["Plugins.Payments.Unzer.Fields.UnzerTokenUrl"] = "Unzer Token URL",
                     ["Plugins.Payments.Unzer.Fields.UnzerTokenUrl.Hint"] = "Use the default Url for Unzer Token calls, or enter a new one if updated to a new version (v2 ...)",
+                    ["Plugins.Payments.Unzer.Fields.UnzerPaypageApiUrl"] = "Unzer Paypage URL",
+                    ["Plugins.Payments.Unzer.Fields.UnzerPaypageApiUrl.Hint"] = "Use the default Url for Unzer Pay page calls, or enter a new one if updated to a new version (v2 ...)",
                 });
             }
 

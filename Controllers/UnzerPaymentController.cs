@@ -64,6 +64,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             var model = new ConfigurationModel
             {
                 UnzerApiBaseUrl = unzerPaymentSettings.UnzerApiBaseUrl,
+                UnzerTokenUrl = unzerPaymentSettings.UnzerTokenUrl,
+                UnzerPaypageApiUrl = unzerPaymentSettings.UnzerPaypageApiUrl,
                 UnzerApiKey = unzerPaymentSettings.UnzerApiKey,
                 ShopUrl = unzerPaymentSettings.ShopUrl,
                 LogoImage = unzerPaymentSettings.LogoImage,
@@ -123,6 +125,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             var apiKeyHasChanged = model.UnzerApiKey != null && model.UnzerApiKey != settings.UnzerApiKey;
 
             settings.UnzerApiBaseUrl = model.UnzerApiBaseUrl;
+            settings.UnzerTokenUrl = model.UnzerTokenUrl;
+            settings.UnzerPaypageApiUrl = model.UnzerPaypageApiUrl;
             settings.UnzerApiKey = !string.IsNullOrEmpty(model.UnzerApiKey) ? model.UnzerApiKey : settings.UnzerApiKey;
             settings.ShopUrl = model.ShopUrl;
             settings.LogoImage = model.LogoImage;
@@ -135,7 +139,10 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             settings.AutoCapture = (AutoCapture)model.AutoCapture;
             settings.AdditionalFeePercentage = model.AdditionalFeePercentage;
             settings.SendOrderConfirmOnAuthorized = model.SendOrderConfirmOnAuthorized;
-                        
+
+            await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.UnzerApiBaseUrl, true, 0, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.UnzerTokenUrl, true, 0, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.UnzerPaypageApiUrl, true, 0, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.UnzerApiKey, model.UnzerApiKey_OverrideForStore, storeId, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.ShopUrl, model.ShopUrl_OverrideForStore, storeId, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.LogoImage, model.LogoImage_OverrideForStore, storeId, false);

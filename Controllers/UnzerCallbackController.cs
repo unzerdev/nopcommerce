@@ -116,10 +116,8 @@ public class UnzerCallbackController : Controller
         if (unzerPaymentType.Prepayment)
         {
             var store = await _storeContext.GetCurrentStoreAsync();
-            //var customer = await _customerService.GetCustomerByIdAsync(order.CustomerId);            
             var instructionJson = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PrePaymentInstructionAttribute, store.Id);
             var prePaymentInstModel = JsonSerializer.Deserialize<PrePaymentCompletedModel>(instructionJson);
-            //await _genericAttributeService.SaveAttributeAsync<PrePaymentCompletedModel>(order, UnzerPaymentDefaults.PrePaymentInstructionAttribute, null, store.Id);
             return View("~/Plugins/Payments.Unzer/Views/Completed.cshtml", prePaymentInstModel);
         }
 
@@ -142,8 +140,6 @@ public class UnzerCallbackController : Controller
         {
             return RedirectToRoute("OrderDetails", new { orderId = order.Id });
         }
-
-        //return View("~/Plugins/Payments.Unzer/Views/Completed.cshtml", model);
 
         return RedirectToRoute("CheckoutCompleted", new { orderId = order.Id });
     }

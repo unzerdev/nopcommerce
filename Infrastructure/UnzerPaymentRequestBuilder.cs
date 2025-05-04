@@ -134,6 +134,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             var shopUrl = await GetShopUrlAsync();
             var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
             var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelOrderRouteName, null, _webHelper.GetCurrentRequestProtocol());
+            var pendingUrl = _urlHelper.RouteUrl("OrderDetails", new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
 
             var storeLogoPict = await _pictureService.GetPictureByIdAsync(_storeInformationSettings.LogoPictureId);
             var storeLogoUrl = (await _pictureService.GetPictureUrlAsync(storeLogoPict)).Url;
@@ -170,7 +171,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 {
                     returnCancel = cancelUrl,
                     returnFailure = cancelUrl,
-                    returnPending = returnUrl,
+                    returnPending = pendingUrl,
                     returnSuccess = returnUrl
                 },
                 style = new Style
@@ -253,6 +254,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             var shopUrl = await GetShopUrlAsync();
             var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
             var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelOrderRouteName, null, _webHelper.GetCurrentRequestProtocol());
+            var pendingUrl = _urlHelper.RouteUrl("OrderDetails", new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
 
             var storeLogoPict = await _pictureService.GetPictureByIdAsync(_storeInformationSettings.LogoPictureId);
             var storeLogoUrl = (await _pictureService.GetPictureUrlAsync(storeLogoPict)).Url;
@@ -289,7 +291,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 {
                     returnCancel = cancelUrl,
                     returnFailure = cancelUrl,
-                    returnPending = returnUrl,
+                    returnPending = pendingUrl,
                     returnSuccess = returnUrl
                 },
                 style = new Style
