@@ -36,7 +36,7 @@ namespace Unzer.Plugin.Payments.Unzer
 
         public static string DevCallbackUrl = "https://webhook-test.com/25e2a12f616f335f7eaf8843a3de5e57";
         public static WebHookEventType[] CallbackEvents = new WebHookEventType[] { WebHookEventType.authorize, WebHookEventType.charge };
-        public static string[] IgnoreCallbackEvents = new string[] { "authorize.failed", "authorize.pending", "authorize.canceled", "charge.failed", "charge.canceled" };
+        public static string[] IgnoreCallbackEvents = new string[] { "authorize.pending", "authorize.canceled", "charge.failed", "charge.canceled" };
 
         public static string[] UseBearerTokenUrls = new string[] { "/v2/merchant/paypage" };
 

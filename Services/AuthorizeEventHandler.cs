@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 using Nop.Core;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
@@ -36,12 +37,18 @@ public class AuthorizeEventHandler : ICallEventHandler<AuthorizeEventHandler>
             return;
 
         var paymentAuth = await _unzerApiService.PaymentAuthorizedResponse(eventPayload.paymentId);
-        if (paymentAuth.IsError || paymentAuth == null)
+        if(paymentAuth == null)
             throw new NopException(paymentAuth.ErrorResponse.Errors.First().merchantMessage);
 
         var nopOrder = await _orderService.GetOrderByIdAsync(Convert.ToInt32(paymentAuth.orderId));
         if(nopOrder == null)
             throw new NopException($"Order {paymentAuth.orderId} for payment {eventPayload.paymentId} could not be found");
+
+        if (paymentAuth.IsError && eventPayload.Event == "authorize.failed")
+        {
+            await HandleAuthorizeFailed(nopOrder, paymentAuth);
+            return;
+        }
 
         if (eventPayload.Event == "authorize.succeeded" && nopOrder.PaymentStatus == PaymentStatus.Authorized)
             return;
@@ -100,13 +107,30 @@ public class AuthorizeEventHandler : ICallEventHandler<AuthorizeEventHandler>
         }
     }
 
-    private async Task AddOrderNote(Order order, string note)
+    private async Task HandleAuthorizeFailed(Order order, PaymentCaptureResponse paymentAuth)
+    {
+        var sb = new StringBuilder();
+        sb.AppendFormat("Authorize failed: {0}", paymentAuth.message.customer).AppendLine();
+        // order note update to merchant
+        await AddOrderNote(order, sb.ToString(), true);
+
+        sb = new StringBuilder();
+        sb.AppendFormat("Authorize failed: {0}", paymentAuth.message.merchant).AppendLine();
+        sb.AppendFormat("Unzer Payment id: {0}", paymentAuth.resources.paymentId).AppendLine();
+        sb.AppendFormat("Short ID: {0}", paymentAuth.processing?.shortId).AppendLine();        
+        sb.AppendFormat("Pending: {0}", paymentAuth.IsPending).AppendLine();
+        sb.AppendFormat("Payment type: {0}", UnzerPaymentDefaults.MapPaymentType(paymentAuth.resources.typeId)).AppendLine();
+        // order note update to merchant
+        await AddOrderNote(order, sb.ToString());
+    }
+
+    private async Task AddOrderNote(Order order, string note, bool displayToCustomer = false)
     {
         await _orderService.InsertOrderNoteAsync(new OrderNote
         {
             OrderId = order.Id,
             Note = note,
-            DisplayToCustomer = false,
+            DisplayToCustomer = displayToCustomer,
             CreatedOnUtc = DateTime.UtcNow
         });
     }
