@@ -55,15 +55,21 @@ public class CaptureEventHandler : ICallEventHandler<CaptureEventHandler>
         var chargeId = eventPayload.retrieveUrl.Substring(eventPayload.retrieveUrl.LastIndexOf('/') + 1);
 
         var paymentCapt = await _unzerApiService.PaymentCaptureResponse(eventPayload.paymentId, chargeId);
-        if (paymentCapt == null || paymentCapt.IsError)
-        {
-            await _logger.WarningAsync($"CaptureEventHandler.HandleEvent: Capture failed at provider with {paymentCapt.message}");
-            throw new NopException(paymentCapt.ErrorResponse.Errors.First().merchantMessage);
+        if (paymentCapt == null)
+        {            
+            throw new NopException("CaptureEventHandler: No Payment Capture response could be fetched");
         }
+
         var orderId = Convert.ToInt32(paymentCapt.orderId);
         var nopOrder = await _orderService.GetOrderByIdAsync(orderId);
         if (nopOrder == null)
             throw new NopException($"Order {paymentCapt.orderId} for payment {eventPayload.paymentId} could not be found");
+
+        if (paymentCapt.IsError)
+        {
+            await HandleCaptureFailed(nopOrder, paymentCapt);
+            return;
+        }
 
         if (eventPayload.Event == "charge.succeeded" && nopOrder.PaymentStatus == PaymentStatus.Paid)
             return;
@@ -197,13 +203,30 @@ public class CaptureEventHandler : ICallEventHandler<CaptureEventHandler>
         });
     }
 
-    private async Task AddOrderNote(Order order, string note)
+    private async Task HandleCaptureFailed(Order order, PaymentCaptureResponse paymentCapt)
+    {
+        var sb = new StringBuilder();
+        sb.AppendFormat("Capture failed: {0}", paymentCapt.message.customer).AppendLine();
+        // order note update to merchant
+        await AddOrderNote(order, sb.ToString(), true);
+
+        sb = new StringBuilder();
+        sb.AppendFormat("Capture failed: {0}", paymentCapt.message.merchant).AppendLine();
+        sb.AppendFormat("Unzer Payment id: {0}", paymentCapt.resources.paymentId).AppendLine();
+        sb.AppendFormat("Short ID: {0}", paymentCapt.processing?.shortId).AppendLine();
+        sb.AppendFormat("Pending: {0}", paymentCapt.IsPending).AppendLine();
+        sb.AppendFormat("Payment type: {0}", UnzerPaymentDefaults.MapPaymentType(paymentCapt.resources.typeId)).AppendLine();
+        // order note update to merchant
+        await AddOrderNote(order, sb.ToString());
+    }
+
+    private async Task AddOrderNote(Order order, string note, bool displayToCustomer = false)
     {
         await _orderService.InsertOrderNoteAsync(new OrderNote
         {
             OrderId = order.Id,
             Note = note,
-            DisplayToCustomer = false,
+            DisplayToCustomer = displayToCustomer,
             CreatedOnUtc = DateTime.UtcNow
         });
     }
