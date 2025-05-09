@@ -38,7 +38,8 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var response = await _unzerApiHttpClient.RequestAsync<CreatePayPageRequest, PayPageResponse>(authPayPageReq);
             if (response.IsError)
             {
-                var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
+                var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
+                errMsg = !string.IsNullOrEmpty(errMsg) ? errMsg : response.ErrorResponse.responseMessage;                 
                 await _logger.ErrorAsync($"UnzerApiService.CreateAuthPayment(V2): Failed with call to Unzer API Client with {errMsg}");
                 status.StatusMessage = errMsg;
                 status.Success = response.IsSuccess;
@@ -66,7 +67,8 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var response = await _unzerApiHttpClient.RequestAsync<CreatePayPageRequest, PayPageResponse>(authPayPageReq);
             if (response.IsError)
             {
-                var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
+                var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
+                errMsg = !string.IsNullOrEmpty(errMsg) ? errMsg : response.ErrorResponse.responseMessage;
                 await _logger.ErrorAsync($"UnzerApiService.CreateCapturePayment: Failed with call to Unzer API Client with {errMsg}");
                 status.StatusMessage = errMsg;
                 status.Success = response.IsSuccess;
