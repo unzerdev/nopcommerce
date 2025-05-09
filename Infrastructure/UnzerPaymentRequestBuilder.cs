@@ -691,7 +691,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             var config = new JsonObject();
 
             var excludeTypes = _unzerPaymentSettings.SelectedPaymentTypes.Count > 1 ? _unzerPaymentSettings.AvailablePaymentTypes.Where(t => t != selectedPaymentMethod).ToArray() : new string[0];
-            var defaultSelected = excludeTypes.Any();
+            var defaultSelected = !excludeTypes.Any();
             config = new JsonObject
             {
                 ["default"] = new JsonObject
