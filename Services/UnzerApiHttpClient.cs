@@ -79,6 +79,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
                 result.IsError = true;
                 result.ErrorResponse = JsonSerializer.Deserialize<UnzerApiErrorResponse>(responseString ?? string.Empty);
 
+                await _logger.InformationAsync($"UnzerApiHttpClient.RequestAsync Failed for Request content: {requestString}");
                 await _logger.InformationAsync($"UnzerApiHttpClient.RequestAsync Failed with Respones content: {responseString}");
 
                 return result;

@@ -302,7 +302,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                     metadataId = _unzerPaymentSettings.UnzerMetadataId,
                     basketId = !string.IsNullOrEmpty(basketId) ? basketId : null
                 },
-                customerSettings = !string.IsNullOrEmpty(unzerCustomerId) ? new Customersettings
+                customerSettings = string.IsNullOrEmpty(unzerCustomerId) ? new Customersettings
                 {
                     type = CustomerType.B2C
                 } : null

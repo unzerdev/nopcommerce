@@ -17,6 +17,7 @@ namespace Unzer.Plugin.Payments.Unzer.Models.Api
         public bool IsResumed { get; set; }
 
         public HttpStatusCode HttpStatusCode { get; set; }
+        public string RequestContent { get; set; }
 
         public UnzerApiErrorResponse ErrorResponse { get; set; }
     }
