@@ -73,13 +73,15 @@ namespace Unzer.Plugin.Payments.Unzer.Services
 
             var result = JsonSerializer.Deserialize<TResponse>(responseString ?? string.Empty);
 
+            if(_unzerPaymentSettings.LogCallbackPostData)
+                await _logger.InformationAsync($"UnzerApiHttpClient.RequestAsync Request content sent: {requestString}");
+
             if (!httpResponse.IsSuccessStatusCode)
             { 
                 result.HttpStatusCode = httpResponse.StatusCode;
                 result.IsError = true;
                 result.ErrorResponse = JsonSerializer.Deserialize<UnzerApiErrorResponse>(responseString ?? string.Empty);
 
-                await _logger.InformationAsync($"UnzerApiHttpClient.RequestAsync Failed for Request content: {requestString}");
                 await _logger.InformationAsync($"UnzerApiHttpClient.RequestAsync Failed with Respones content: {responseString}");
 
                 return result;

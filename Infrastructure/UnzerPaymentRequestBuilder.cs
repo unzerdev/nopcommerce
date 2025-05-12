@@ -175,7 +175,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                     logoImage = !string.IsNullOrEmpty(_unzerPaymentSettings.LogoImage) ? _unzerPaymentSettings.LogoImage : storeLogoUrl,
                 },
                 shopName = currentStore.Name,
-                recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : PayPageRecurrenceType.unscheduled,
+                recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : null,
                 resources = new V2Resources
                 {
                     customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
@@ -295,7 +295,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                     logoImage = !string.IsNullOrEmpty(_unzerPaymentSettings.LogoImage) ? _unzerPaymentSettings.LogoImage : storeLogoUrl,
                 },
                 shopName = currentStore.Name,
-                recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : PayPageRecurrenceType.unscheduled,
+                recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : null,
                 resources = new V2Resources
                 {
                     customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,

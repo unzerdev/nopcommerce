@@ -11,7 +11,7 @@ namespace Unzer.Plugin.Payments.Unzer.Models.Api
         public decimal amount { get; set; }
         public string currency { get; set; }
         public PayPageType type { get; set; }
-        public PayPageRecurrenceType recurrenceType { get; set; }
+        public PayPageRecurrenceType? recurrenceType { get; set; }
         public string orderId { get; set; }
         public string invoiceId { get; set; }
         public string shopName { get; set; }
