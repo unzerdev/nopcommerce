@@ -70,6 +70,22 @@
     }
   },
   {
+    "Name": "ClickToPay",
+    "ShortName": "",
+    "SystemName": "",
+    "UnzerName": "clicktopay",
+    "SupportAuthurize": false,
+    "SupportCharge": false,
+    "Deprecated": false,
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "clicktopay",
+      "Attributes": [
+        "Enabled"
+      ]
+    }
+  },
+  {
     "Name": "EPS",
     "ShortName": "eps",
     "SystemName": "Payments.Unzer.EPS",
@@ -196,7 +212,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "pfcard",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "PostFinance eFinance",
@@ -206,7 +229,14 @@
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": false,
-    "Prepayment": false
+    "Prepayment": false,
+    "PaypageInfo": {
+      "Name": "pfefinance",
+      "Attributes": [
+        "Enabled",
+        "Order"
+      ]
+    }
   },
   {
     "Name": "Sofort",
@@ -380,6 +410,16 @@
     "ShortName": "piv",
     "SystemName": "Payments.Unzer.invoice-secured",
     "UnzerName": "invoice-secured",
+    "SupportAuthurize": false,
+    "SupportCharge": true,
+    "Deprecated": true,
+    "Prepayment": false
+  },
+  {
+    "Name": "Giropay",
+    "ShortName": "piv",
+    "SystemName": "Payments.Unzer.giropay",
+    "UnzerName": "giropay",
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": true,
