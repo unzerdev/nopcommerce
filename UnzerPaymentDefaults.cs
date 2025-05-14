@@ -106,5 +106,26 @@ namespace Unzer.Plugin.Payments.Unzer
 
             return unzerPaymentType;
         }
+
+        public static List<string> AllActivePaymentTypeByUnzerName()
+        {
+            var activePaymentTypes = UnzerPaymentTypes.Where(p => !p.Deprecated && !p.IsSupplement).Select(a => a.UnzerName).ToList();
+
+            return activePaymentTypes;
+        }
+
+        public static List<string> AllSupplementPaymentTypeByUnzerName()
+        {
+            var suppPaymentTypes = UnzerPaymentTypes.Where(p => p.IsSupplement).Select(a => a.UnzerName).ToList();
+
+            return suppPaymentTypes;
+        }
+
+        public static List<string> AllNoneActivePaymentTypeByUnzerName()
+        {
+            var activePaymentTypes = UnzerPaymentTypes.Where(p => p.Deprecated).Select(a => a.UnzerName).ToList();
+
+            return activePaymentTypes;
+        }
     }
 }

@@ -160,7 +160,8 @@ public class UnzerPaymentPluginManager : PaymentPluginManager
         var unzerPlugin = allPaymentPlugins.SingleOrDefault(p => p.PluginDescriptor.SystemName.Contains(UnzerPaymentDefaults.SystemName));
         if (unzerPlugin != null)
         {
-            if (_unzerPaymentSettings.SelectedPaymentTypes.Count() > 1)
+            var allSuppTypes = UnzerPaymentDefaults.AllSupplementPaymentTypeByUnzerName();
+            if (_unzerPaymentSettings.SelectedPaymentTypes.Except(allSuppTypes).Count() > 1)
             {
                 var systemName = unzerPlugin.PluginDescriptor.SystemName;
                 allPaymentPlugins.Remove(unzerPlugin);

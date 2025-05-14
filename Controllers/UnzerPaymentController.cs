@@ -241,6 +241,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
 
                 try
                 {
+                    var allNoneActiveTypes = UnzerPaymentDefaults.AllNoneActivePaymentTypeByUnzerName();
+
                     var keyPairResult = await _unzerApiService.GetKeyPairAsync();
                     if (keyPairResult.IsError)
                     {
@@ -249,7 +251,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
                     }
                     unzerPaymentSettings.UnzerPublicApiKey = keyPairResult.publicKey;
 
-                    unzerPaymentSettings.AvailablePaymentTypes = keyPairResult.availablePaymentTypes.ToList();
+                    unzerPaymentSettings.AvailablePaymentTypes = keyPairResult.availablePaymentTypes.Except(allNoneActiveTypes).ToList();
                 }
                 catch (Exception ex)
                 {

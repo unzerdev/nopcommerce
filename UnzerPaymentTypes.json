@@ -78,6 +78,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
+    "IsSupplement":  true,
     "PaypageInfo": {
       "Name": "clicktopay",
       "Attributes": [

@@ -417,8 +417,15 @@ namespace Unzer.Plugin.Payments.Unzer
 
             if (targetVersion == "2.10.0")
             {
+                var allNoneActiveType = UnzerPaymentDefaults.AllNoneActivePaymentTypeByUnzerName();
                 _unzerPaymentSettings.UnzerTokenUrl = UnzerPaymentDefaults.UnzerTokenUrl;
                 _unzerPaymentSettings.UnzerPaypageApiUrl = UnzerPaymentDefaults.UnzerPaypageApiUrl;
+
+                if(_unzerPaymentSettings.AvailablePaymentTypes.Any())
+                    _unzerPaymentSettings.AvailablePaymentTypes = _unzerPaymentSettings.AvailablePaymentTypes.Except(allNoneActiveType).ToList();
+
+                if (_unzerPaymentSettings.SelectedPaymentTypes.Any())
+                    _unzerPaymentSettings.SelectedPaymentTypes = _unzerPaymentSettings.SelectedPaymentTypes.Except(allNoneActiveType).ToList();
 
                 await _settingService.SaveSettingAsync(_unzerPaymentSettings);
 

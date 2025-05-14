@@ -1,4 +1,6 @@
-﻿namespace Unzer.Plugin.Payments.Unzer.Models;
+﻿using DocumentFormat.OpenXml.Drawing;
+
+namespace Unzer.Plugin.Payments.Unzer.Models;
 public class UnzerPaymentType
 {
     public string Name { get; set; }
@@ -9,6 +11,7 @@ public class UnzerPaymentType
     public bool SupportCharge { get; set; }
     public bool Deprecated { get; set; }
     public bool Prepayment { get; set; }
+    public bool IsSupplement { get; set; }
     public PaypageInfo PaypageInfo { get; set; }
 }
 
