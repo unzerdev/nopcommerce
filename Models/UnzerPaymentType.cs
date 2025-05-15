@@ -12,6 +12,7 @@ public class UnzerPaymentType
     public bool Deprecated { get; set; }
     public bool Prepayment { get; set; }
     public bool IsSupplement { get; set; }
+    public string? Supplements { get; set; }
     public PaypageInfo PaypageInfo { get; set; }
 }
 

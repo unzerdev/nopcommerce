@@ -121,6 +121,12 @@ namespace Unzer.Plugin.Payments.Unzer
             return suppPaymentTypes;
         }
 
+        public static List<UnzerPaymentType> HasSupplements(string unzerName)
+        {
+            var supplements = UnzerPaymentTypes.Where(p => p.IsSupplement && p.Supplements == unzerName).ToList();
+            return supplements;
+        }
+
         public static List<string> AllNoneActivePaymentTypeByUnzerName()
         {
             var activePaymentTypes = UnzerPaymentTypes.Where(p => p.Deprecated).Select(a => a.UnzerName).ToList();

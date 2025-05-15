@@ -734,9 +734,11 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 if (paymentType.PaypageInfo == null || (paymentType.Name == "Unzer" && paymentType.UnzerName == "unz"))
                     continue;
 
+                var enableAsSupplement = paymentType.IsSupplement && paymentType.Supplements != null && paymentType.Supplements == selectedpayment.UnzerName;
+
                 var paymentAttr = new JsonObject
                 {
-                    ["enabled"] = false,
+                    ["enabled"] = enableAsSupplement,
                     ["order"] = 0,
                 };
 
