@@ -151,7 +151,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             else if (storeId > 0)
                 await _settingService.SetSettingAsync(placeOrderDelayKey, false, storeId);
 
-            if (apiKeyHasChanged)
+            if (apiKeyHasChanged || !settings.UnzerWebHooksSet)
             {
                 _unzerApiService.UnzerPaymentSettings = settings;
                 await ManageUnzerSettings(settings, apiKeyHasChanged);                
@@ -192,7 +192,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
 
                         foreach (var eventType in UnzerPaymentDefaults.CallbackEvents)
                         {
-                            if (!curWebHooks.Events.Any(e => e.Event == eventType.ToString()))
+                            if (!curWebHooks.Events.Any(e => e.Event == eventType.ToString() && e.Url == webHookUrl))
                             {
                                 eventList.Add(eventType.ToString());
                             }
