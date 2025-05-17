@@ -36,7 +36,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var authPayPageReq = await _unzerPayRequestBuilder.BuildV2AuthorizePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreatePayPageRequest, PayPageResponse>(authPayPageReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
                 errMsg = !string.IsNullOrEmpty(errMsg) ? errMsg : response.ErrorResponse.responseMessage;                 
@@ -65,7 +65,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var authPayPageReq = await _unzerPayRequestBuilder.BuildV2CapturePayPageRequestAsync(order, isRecurring, unzerCustomerId, basketId);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreatePayPageRequest, PayPageResponse>(authPayPageReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
                 errMsg = !string.IsNullOrEmpty(errMsg) ? errMsg : response.ErrorResponse.responseMessage;
@@ -88,7 +88,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var authPayPageReq = await _unzerPayRequestBuilder.BuildCaptureRequestAsync(order, capturreAmount);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreateCaptureRequest, PaymentCaptureResponse>(authPayPageReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.CapturePayment: Failed with call to Unzer API Client with {errMsg}");
@@ -109,7 +109,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var authPayPageReq = await _unzerPayRequestBuilder.BuildSubCaptureRequestAsync(order, capturreAmount);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreateSubCaptureRequest, PaymentCaptureResponse>(authPayPageReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.CaptureSubPayment: Failed with call to Unzer API Client with {errMsg}");
@@ -137,7 +137,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var refundPayPageReq = await _unzerPayRequestBuilder.BuildRefundRequestAsync(order, refundAmount);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreateRefundRequest, PaymentRefundResponse>(refundPayPageReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.RefundPayment: Failed with call to Unzer API Client with {errMsg}");
@@ -158,7 +158,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var cancelPayPageReq = await _unzerPayRequestBuilder.BuildCancelRequestAsync(order, cancelAmount);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreateCancelAuthorizedRequest, PaymentCancelResponse>(cancelPayPageReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.CancelPayment: Failed with call to Unzer API Client with {errMsg}");
@@ -179,7 +179,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var cancelPayPageReq = await _unzerPayRequestBuilder.BuildCancelChargeRequestAsync(order, cancelAmount);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreateCancelChargedRequest, PaymentCancelResponse>(cancelPayPageReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.CancelChargePayment: Failed with call to Unzer API Client with {errMsg}");
@@ -200,7 +200,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var createCustReq = await _unzerPayRequestBuilder.BuildCreateCustomerRequestAsync(customer, billingAddress, shippingAddress);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreateCustomerRequest, CreateCustomerResponse>(createCustReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.CreateCustomer: Failed with call to Unzer API Client with {errMsg}");
@@ -221,7 +221,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var updateCustReq = await _unzerPayRequestBuilder.BuildUpdateCustomerRequestAsync(unserCustomerId, customer, billingAddress, shippingAddress);
 
             var response = await _unzerApiHttpClient.RequestAsync<UpdateCustomerRequest, CreateCustomerResponse>(updateCustReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.UpdateCustomer: Failed with call to Unzer API Client with {errMsg}");
@@ -245,7 +245,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             };
 
             var response = await _unzerApiHttpClient.RequestAsync<GetCustomerRequest, CreateCustomerResponse>(getCustReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.GetCustomer: Failed with call to Unzer API Client with {errMsg}");
@@ -265,9 +265,11 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var getPayAuthReq = await _unzerPayRequestBuilder.BuildPaymentAuthorizeRequestAsync(paymentId);
 
             var response = await _unzerApiHttpClient.RequestAsync<GetPaymentAutorizeRequest, PaymentCaptureResponse>(getPayAuthReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
-                var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
+                var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
+                errMsg = string.IsNullOrEmpty(errMsg) && response.ErrorResponse != null && response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : string.Empty;
+                errMsg = !string.IsNullOrEmpty(errMsg) ? errMsg : response.ErrorResponse.responseMessage;
                 await _logger.ErrorAsync($"UnzerApiService.PaymentAuthorizedResponse: Failed with call to Unzer API Client with {errMsg}");
             }
 
@@ -279,9 +281,11 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var getPayCaptReq = await _unzerPayRequestBuilder.BuildPaymentCaptureRequestAsync(paymentId, chargeId);
 
             var response = await _unzerApiHttpClient.RequestAsync<GetPaymentCaptureRequest, PaymentCaptureResponse>(getPayCaptReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
-                var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
+                var errMsg = response.ErrorResponse != null && response.ErrorResponse.FieldErrors != null && response.ErrorResponse.FieldErrors.Any() ? string.Join(",", response.ErrorResponse.FieldErrors.Select(e => $"{e.Field} {e.Message}")) : string.Empty;
+                errMsg = string.IsNullOrEmpty(errMsg) && response.ErrorResponse != null && response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : string.Empty;
+                errMsg = !string.IsNullOrEmpty(errMsg) ? errMsg : response.ErrorResponse.responseMessage;
                 await _logger.ErrorAsync($"UnzerApiService.PaymentCaptureResponse: Failed with call to Unzer API Client with {errMsg}");
             }
 
@@ -293,7 +297,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var getWebHoolEvents = new GetWebHooksRequest();
 
             var response = await _unzerApiHttpClient.RequestAsync<GetWebHooksRequest, SetWebHooksResponse>(getWebHoolEvents);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 response.Events = new List<WebHookEvent>();
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
@@ -336,7 +340,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var setWebHookReq = await _unzerPayRequestBuilder.BuildWebHookRequestAsync(callbackUrl, eventType);
 
             var response = await _unzerApiHttpClient.RequestAsync<SetWebHookRequest, SetWebHookResponse>(setWebHookReq);
-            if (response.IsError)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
             {
                 var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
                 await _logger.ErrorAsync($"UnzerApiService.SetWebHookEvent: Failed with call to Unzer API Client with {errMsg}");

@@ -64,7 +64,10 @@ public class CaptureEventHandler : ICallEventHandler<CaptureEventHandler>
         var orderId = Convert.ToInt32(paymentCapt.orderId);
         var nopOrder = await _orderService.GetOrderByIdAsync(orderId);
         if (nopOrder == null)
-            throw new NopException($"Order {paymentCapt.orderId} for payment {eventPayload.paymentId} could not be found");
+        {
+            await _logger.WarningAsync($"CaptureEventHandler: Order {paymentCapt.orderId} for payment {eventPayload.paymentId} could not be found");
+            return;
+        }
 
         if (paymentCapt.IsError)
         {
