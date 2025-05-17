@@ -511,7 +511,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 email = !custIsGuset ? customer.Email : billingAddress.Email,
                 phone = !custIsGuset ? customer.Phone : billingAddress.PhoneNumber,
                 mobile = !custIsGuset ? customer.Phone : billingAddress.PhoneNumber,
-                language = lang.UniqueSeoCode,
+                language = lang.UniqueSeoCode.ToLower(),
                 billingAddress = new Billingaddress
                 {
                     name = $"{billingAddress.FirstName} {billingAddress.LastName}",
@@ -560,7 +560,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 email = !custIsGuset ? customer.Email : billingAddress.Email,
                 phone = !custIsGuset ? customer.Phone : billingAddress.PhoneNumber,
                 mobile = !custIsGuset ? customer.Phone : billingAddress.PhoneNumber,
-                language = lang.UniqueSeoCode,
+                language = lang.UniqueSeoCode.ToLower(),
                 billingAddress = new Billingaddress
                 {
                     name = $"{billingAddress.FirstName} {billingAddress.LastName}",

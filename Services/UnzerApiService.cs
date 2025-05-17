@@ -127,6 +127,13 @@ namespace Unzer.Plugin.Payments.Unzer.Services
         public async Task<PaymentApiStatus> RefundPayment(Order order, decimal refundAmount)
         {
             var status = new PaymentApiStatus { Success = false, StatusMessage = string.Empty };
+
+            if(string.IsNullOrWhiteSpace(order.CaptureTransactionId))
+            {
+                status.StatusMessage = "Order has no or invalid capture transaction registration";
+                return status;
+            }
+
             var refundPayPageReq = await _unzerPayRequestBuilder.BuildRefundRequestAsync(order, refundAmount);
 
             var response = await _unzerApiHttpClient.RequestAsync<CreateRefundRequest, PaymentRefundResponse>(refundPayPageReq);

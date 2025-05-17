@@ -6,6 +6,7 @@ using Microsoft.Net.Http.Headers;
 using Nop.Core;
 using Nop.Services.Logging;
 using Unzer.Plugin.Payments.Unzer.Models.Api;
+using Nop.Core.Domain.Logging;
 
 namespace Unzer.Plugin.Payments.Unzer.Services
 {
@@ -74,7 +75,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             var result = JsonSerializer.Deserialize<TResponse>(responseString ?? string.Empty);
 
             if(_unzerPaymentSettings.LogCallbackPostData)
-                await _logger.InformationAsync($"UnzerApiHttpClient.RequestAsync Request content sent: {requestString}");
+                await _logger.InsertLogAsync(LogLevel.Information, $"UnzerApiHttpClient.RequestAsync Request {requestMessage.RequestUri}", requestString);
 
             if (!httpResponse.IsSuccessStatusCode)
             { 
@@ -82,7 +83,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
                 result.IsError = true;
                 result.ErrorResponse = JsonSerializer.Deserialize<UnzerApiErrorResponse>(responseString ?? string.Empty);
 
-                await _logger.InformationAsync($"UnzerApiHttpClient.RequestAsync Failed with Respones content: {responseString}");
+                await _logger.InsertLogAsync(LogLevel.Information, $"UnzerApiHttpClient.RequestAsync {requestMessage.RequestUri} Failed", requestString);
 
                 return result;
             }

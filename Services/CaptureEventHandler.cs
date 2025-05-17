@@ -56,8 +56,9 @@ public class CaptureEventHandler : ICallEventHandler<CaptureEventHandler>
 
         var paymentCapt = await _unzerApiService.PaymentCaptureResponse(eventPayload.paymentId, chargeId);
         if (paymentCapt == null)
-        {            
-            throw new NopException("CaptureEventHandler: No Payment Capture response could be fetched");
+        {
+            await _logger.WarningAsync($"CaptureEventHandler: No charge could be found for {eventPayload.paymentId}/{chargeId}");
+            return;
         }
 
         var orderId = Convert.ToInt32(paymentCapt.orderId);
