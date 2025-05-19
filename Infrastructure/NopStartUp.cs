@@ -34,6 +34,8 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             services.AddScoped<IOrderProcessingService, DelayedPlaceOrderProcessingService>();
             services.AddScoped<IPaymentPluginManager, UnzerPaymentPluginManager>();
             services.AddScoped<IMessageTokenProvider, UnzerMessageTokenProvider>();
+            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+            services.AddHostedService<QueuedProcessorBackgroundService>();
         }
     }
 }

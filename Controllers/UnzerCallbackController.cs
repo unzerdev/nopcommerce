@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Nop.Core;
 using Nop.Core.Domain.Logging;
 using Nop.Core.Domain.Orders;
@@ -7,6 +8,8 @@ using Nop.Services.Common;
 using Nop.Services.Logging;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
+using Nop.Web.Areas.Admin.Controllers;
+using Unzer.Plugin.Payments.Unzer.Infrastructure;
 using Unzer.Plugin.Payments.Unzer.Models;
 using Unzer.Plugin.Payments.Unzer.Models.Api;
 using Unzer.Plugin.Payments.Unzer.Services;
@@ -23,17 +26,19 @@ public class UnzerCallbackController : Controller
     private readonly IGenericAttributeService _genericAttributeService;
     private readonly ICallEventHandler<AuthorizeEventHandler> _authEventHandler;
     private readonly ICallEventHandler<CaptureEventHandler> _captEventHandler;
+    private readonly IBackgroundTaskQueue _taskQueue;
 
     public UnzerCallbackController(
         IPaymentPluginManager paymentPluginManager,
         IOrderService orderService,
         UnzerPaymentSettings unzerSettings,
-        ILogger logger, IWorkContext workContext,
+        Nop.Services.Logging.ILogger logger, IWorkContext workContext,
         IStoreContext storeContext,
         OrderSettings orderSettings,
         IGenericAttributeService genericAttributeService,
         ICallEventHandler<AuthorizeEventHandler> authEventHandler,
-        ICallEventHandler<CaptureEventHandler> captEventHandler)
+        ICallEventHandler<CaptureEventHandler> captEventHandler,
+        IBackgroundTaskQueue taskQueue)
     {
         _paymentPluginManager = paymentPluginManager;
         _orderService = orderService;
@@ -44,6 +49,7 @@ public class UnzerCallbackController : Controller
         _genericAttributeService = genericAttributeService;
         _authEventHandler = authEventHandler;
         _captEventHandler = captEventHandler;
+        _taskQueue = taskQueue;
     }
 
     [HttpPost]
@@ -87,11 +93,35 @@ public class UnzerCallbackController : Controller
             throw new NopException(errorMsg);
         }
 
-        if (callBackReq.Event.StartsWith("authorize."))
-            await _authEventHandler.HandleEvent(callBackReq);
+        _taskQueue.QueueBackgroundWorkItem(async (serviceProvider, token) =>
+        {
+            var logger = serviceProvider.GetRequiredService<ILogger>();
+            var authEvtHandler = serviceProvider.GetRequiredService<ICallEventHandler<AuthorizeEventHandler>>();
+            var captEvtHandler = serviceProvider.GetRequiredService<ICallEventHandler<CaptureEventHandler>>();
 
-        if (callBackReq.Event.StartsWith("charge."))
-            await _captEventHandler.HandleEvent(callBackReq);
+            await logger.InformationAsync($"Eventhandler job {callBackReq.Event} for {callBackReq.paymentId} started at {DateTime.UtcNow}");
+
+            try
+            {
+                if (callBackReq.Event.StartsWith("authorize."))
+                    await authEvtHandler.HandleEvent(callBackReq);
+
+                if (callBackReq.Event.StartsWith("charge."))
+                    await captEvtHandler.HandleEvent(callBackReq);
+
+                await logger.InformationAsync($"Eventhandler job {callBackReq.Event} for {callBackReq.paymentId} completed successfully at {DateTime.UtcNow}");
+            }
+            catch (Exception ex)
+            {
+                await logger.ErrorAsync($"Error occurred while handling {callBackReq.Event} for {callBackReq.paymentId} at {DateTime.UtcNow}", ex);
+            }
+        });
+
+        //if (callBackReq.Event.StartsWith("authorize."))
+        //    await _authEventHandler.HandleEvent(callBackReq);
+
+        //if (callBackReq.Event.StartsWith("charge."))
+        //    await _captEventHandler.HandleEvent(callBackReq);
 
         return Ok();
     }
