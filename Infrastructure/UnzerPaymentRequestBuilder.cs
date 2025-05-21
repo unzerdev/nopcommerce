@@ -158,7 +158,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             {
                 mode = PayPageMode.authorize,
                 type = PayPageType.hosted,
-                checkoutType = PayPageCheckoutType.payment_only,
+                checkoutType = unzerPaymentType.CheckoutType ?? PayPageCheckoutType.payment_only,
                 currency = currencyCode,
                 amount = orderTotal,
                 orderId = order.Id.ToString("D6"),
@@ -278,7 +278,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             {
                 mode = PayPageMode.charge,
                 type = PayPageType.hosted,
-                checkoutType = PayPageCheckoutType.payment_only,
+                checkoutType = unzerPaymentType.CheckoutType ?? PayPageCheckoutType.payment_only,
                 currency = currencyCode,
                 amount = orderTotal,
                 orderId = order.Id.ToString("D6"),
@@ -697,7 +697,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 ["default"] = new JsonObject
                 {
                     ["enabled"] = defaultSelected,
-                    ["credentialOnFile"] = defaultSelected
+                    ["credentialOnFile"] = true
                 }
             };
 

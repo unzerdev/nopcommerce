@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Drawing;
+using Unzer.Plugin.Payments.Unzer.Infrastructure;
 
 namespace Unzer.Plugin.Payments.Unzer.Models;
 public class UnzerPaymentType
@@ -13,6 +14,7 @@ public class UnzerPaymentType
     public bool Prepayment { get; set; }
     public bool IsSupplement { get; set; }
     public string? Supplements { get; set; }
+    public PayPageCheckoutType? CheckoutType { get; set; }
     public PaypageInfo PaypageInfo { get; set; }
 }
 

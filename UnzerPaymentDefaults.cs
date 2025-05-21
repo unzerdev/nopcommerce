@@ -80,7 +80,8 @@ namespace Unzer.Plugin.Payments.Unzer
                     SystemName = paymentSystemName,
                     SupportAuthurize = true,
                     SupportCharge = true,
-                    Deprecated = false
+                    Deprecated = false,
+                    CheckoutType = PayPageCheckoutType.full
                 };
             }                
 

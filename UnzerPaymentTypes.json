@@ -25,6 +25,7 @@
     "SupportCharge": true,
     "Deprecated": false,
     "Prepayment": false,
+    "CheckoutType": null,
     "PaypageInfo": {
       "Name": "applepay",
       "Attributes": [
@@ -59,6 +60,7 @@
     "SupportCharge": true,
     "Deprecated": false,
     "Prepayment": false,
+    "CheckoutType": 0,
     "PaypageInfo": {
       "Name": "cards",
       "Attributes": [
@@ -146,6 +148,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
+    "CheckoutType": 0,
     "PaypageInfo": {
       "Name": "klarna",
       "Attributes": [
@@ -276,6 +279,7 @@
     "SupportCharge": true,
     "Deprecated": false,
     "Prepayment": false,
+    "CheckoutType": 0,
     "PaypageInfo": {
       "Name": "openbankingpis",
       "Attributes": [
@@ -293,6 +297,7 @@
     "SupportCharge": true,
     "Deprecated": false,
     "Prepayment": false,
+    "CheckoutType": 0,
     "PaypageInfo": {
       "Name": "sepaDirectDebit",
       "Attributes": [
@@ -311,6 +316,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
+    "CheckoutType": 0,
     "PaypageInfo": {
       "Name": "paylaterDirectDebit",
       "Attributes": [
@@ -328,6 +334,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
+    "CheckoutType": 0,
     "PaypageInfo": {
       "Name": "paylaterInstallment",
       "Attributes": [
@@ -345,6 +352,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
+    "CheckoutType": 0,
     "PaypageInfo": {
       "Name": "paylaterInvoice",
       "Attributes": [
