@@ -49,7 +49,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             status.Success = response.IsSuccess;
             status.StatusMessage = "Payment created successfull";
             status.RedirectUrl = response.redirectUrl;
-            //status.PaymentId = response.resources.paymentId;
+            status.PaypageId = response.paypageId;
             return status;
         }
 
@@ -78,8 +78,29 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             status.Success = response.IsSuccess;
             status.StatusMessage = "Payment created successfull";
             status.RedirectUrl = response.redirectUrl;
-            //status.PaymentId = response.resources.paymentId;
+            status.PaypageId = response.paypageId;
             return status;
+        }
+
+        public async Task<PayPageResponse> GetPayPage(string payPageId)
+        {
+            var getPayPageReq = new GetPayPage
+            {
+                paypageId = payPageId
+            };
+
+            var response = await _unzerApiHttpClient.RequestAsync<GetPayPage, PayPageResponse>(getPayPageReq);
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
+            {
+                var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
+                await _logger.ErrorAsync($"UnzerApiService.GetPayPage: Failed with call to Unzer API Client with {errMsg}");
+                response.IsSuccess = false;
+                return response;
+            }
+
+            response.IsSuccess = true;
+
+            return response;
         }
 
         public async Task<PaymentApiStatus> CapturePayment(Order order, decimal capturreAmount)

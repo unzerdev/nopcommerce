@@ -18,6 +18,7 @@ namespace Unzer.Plugin.Payments.Unzer.Services
         Task<PaymentApiStatus> RefundPayment(Order order, decimal refundAmount);
         Task<PaymentApiStatus> CancelPayment(Order order, decimal refundAmount);
         Task<PaymentApiStatus> CancelChargePayment(Order order, decimal cancelAmount);
+        Task<PayPageResponse> GetPayPage(string payPageId);
 
         Task<PaymentApiStatus> GetCustomer(string customerId);
         Task<PaymentApiStatus> CreateCustomer(Customer customer, Address billingAddress, Address shippingAddress);

@@ -634,7 +634,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
 
             var basketReq = new CreateV2BasketRequest
             {
-                totalValueGross = Math.Round(_currencyService.ConvertCurrency(order.OrderSubtotalInclTax, order.CurrencyRate), 2),
+                totalValueGross = Math.Round(_currencyService.ConvertCurrency(order.OrderTotal, order.CurrencyRate), 2),
                 currencyCode = currencyCode,
                 orderId = order.Id.ToString("D6"),
                 basketItems = await ReadBasketItemsAsync(order, orderItems, lang.Id)
@@ -794,6 +794,38 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                     var attributes = _htmlFormatter.ConvertHtmlToPlainText(item.AttributeDescription, true, true);
                     basketItem.subTitle = attributes;
                 }
+
+                basketItems.Add(basketItem);
+            }
+
+            if(order.OrderDiscount > decimal.Zero)
+            {
+                var basketItem = new V2Basketitem
+                {
+                    basketItemReferenceId = (orderItems.Count() + 1).ToString(),
+                    quantity = 1,
+                    amountPerUnitGross = Decimal.Zero,
+                    amountDiscountPerUnitGross = Math.Round(_currencyService.ConvertCurrency(order.OrderDiscount, order.CurrencyRate), 2),
+                    vat = vatRate,
+                    title = "Order Discount",
+                    type = "voucher"
+                };
+
+                basketItems.Add(basketItem);
+            }
+
+            if (order.OrderShippingInclTax > decimal.Zero)
+            {
+                var basketItem = new V2Basketitem
+                {
+                    basketItemReferenceId = (basketItems.Count() + 1).ToString(),
+                    quantity = 1,
+                    amountPerUnitGross = Decimal.Zero,
+                    amountDiscountPerUnitGross = Math.Round(_currencyService.ConvertCurrency(order.OrderShippingInclTax, order.CurrencyRate), 2),
+                    vat = vatRate,
+                    title = "Shipping",
+                    type = "voucher"
+                };
 
                 basketItems.Add(basketItem);
             }

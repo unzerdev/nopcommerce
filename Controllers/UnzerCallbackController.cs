@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Nop.Core;
 using Nop.Core.Domain.Logging;
 using Nop.Core.Domain.Orders;
+using Nop.Core.Domain.Stores;
 using Nop.Services.Common;
 using Nop.Services.Logging;
 using Nop.Services.Orders;
@@ -191,7 +193,7 @@ public class UnzerCallbackController : Controller
         var payPageIdent = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PayPageIdentifier, store.Id);
         if (!string.IsNullOrEmpty(payPageIdent))
         {
-            //var payPage = await _unzerApiService.Get
+            var payPage = await _unzerApiService.GetPayPage(payPageIdent);
         }
 
         var waitCnt = 3;
@@ -235,12 +237,17 @@ public class UnzerCallbackController : Controller
     [HttpGet]
     public async Task<IActionResult> CancelPayment()
     {
-        var order = await _orderService.SearchOrdersAsync(storeId: (await _storeContext.GetCurrentStoreAsync()).Id, customerId: (await _workContext.GetCurrentCustomerAsync()).Id, pageSize: 1);
+        var store = await _storeContext.GetCurrentStoreAsync();
+        var orderId = (await _storeContext.GetCurrentStoreAsync()).Id;
+        var order = await _orderService.SearchOrdersAsync(storeId: orderId, customerId: (await _workContext.GetCurrentCustomerAsync()).Id, pageSize: 1);
         if (order.Any())
-        {
+        {            
             var curOrder = order.OrderByDescending(o => o.CreatedOnUtc).FirstOrDefault();
             if (curOrder != null)
+            {
+                var payPageIdent = await _genericAttributeService.GetAttributeAsync<string>(curOrder, UnzerPaymentDefaults.PayPageIdentifier, store.Id);
                 return RedirectToRoute("OrderDetails", new { orderId = curOrder.Id });
+            }
         }
 
         return RedirectToRoute("HomePage");
