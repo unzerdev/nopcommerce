@@ -31,6 +31,10 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 pattern: "unzerpayment/unzerpaymentcompleted/{orderId:int}",
                 defaults: new { controller = "UnzerCallback", action = "UnzerPaymentCompleted" });
 
+            endpointRouteBuilder.MapControllerRoute(name: UnzerPaymentDefaults.UnzerPaymentPendingRouteName,
+                pattern: "unzerpayment/unzerpaymentpending/{model}",
+                defaults: new { controller = "UnzerCallback", action = "UnzerPrePaymentPending" });
+
             endpointRouteBuilder.MapControllerRoute(name: UnzerPaymentDefaults.UnzerPrePaymentCompleteRouteName,
                 pattern: "unzerpayment/unzerprepaymentcompleted/{model}",
                 defaults: new { controller = "UnzerCallback", action = "UnzerPrePaymentCompleted" });

@@ -130,7 +130,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
             var shopUrl = await GetShopUrlAsync();
             var returnUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentStatusRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
             var cancelUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerCancelPaymentRouteName, null, _webHelper.GetCurrentRequestProtocol());
-            var pendingUrl = _urlHelper.RouteUrl("OrderDetails", new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
+            var pendingUrl = _urlHelper.RouteUrl(UnzerPaymentDefaults.UnzerPaymentPendingRouteName, new { orderId = order.Id }, _webHelper.GetCurrentRequestProtocol());
 
             var storeLogoPict = await _pictureService.GetPictureByIdAsync(_storeInformationSettings.LogoPictureId);
             var storeLogoUrl = (await _pictureService.GetPictureUrlAsync(storeLogoPict)).Url;
@@ -726,7 +726,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 }
 
                 config[selectedpayment.PaypageInfo.Name] = paymentAttr;
-            }            
+            }
 
             foreach (var item in excludeTypes)
             {
@@ -746,7 +746,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 {
                     if (!commonAttr.Contains(attr))
                     {
-                        if(attr == "credentialOnFile")
+                        if (attr == "credentialOnFile")
                             paymentAttr.Add(attr, true);
                         else if (attr == "exemption")
                             paymentAttr.Add(attr, "lvp");

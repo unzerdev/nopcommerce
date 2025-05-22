@@ -8,7 +8,6 @@ using Nop.Services.Common;
 using Nop.Services.Logging;
 using Nop.Services.Orders;
 using Nop.Services.Payments;
-using Nop.Web.Areas.Admin.Controllers;
 using Unzer.Plugin.Payments.Unzer.Infrastructure;
 using Unzer.Plugin.Payments.Unzer.Models;
 using Unzer.Plugin.Payments.Unzer.Models.Api;
@@ -20,6 +19,7 @@ public class UnzerCallbackController : Controller
     private readonly IPaymentPluginManager _paymentPluginManager;
     private readonly IOrderService _orderService;
     private readonly UnzerPaymentSettings _unzerSettings;
+    private readonly IUnzerApiService _unzerApiService;
     private readonly ILogger _logger;
     private readonly IWorkContext _workContext;
     private readonly IStoreContext _storeContext;
@@ -32,6 +32,7 @@ public class UnzerCallbackController : Controller
         IPaymentPluginManager paymentPluginManager,
         IOrderService orderService,
         UnzerPaymentSettings unzerSettings,
+        IUnzerApiService unzerApiService,
         Nop.Services.Logging.ILogger logger, IWorkContext workContext,
         IStoreContext storeContext,
         OrderSettings orderSettings,
@@ -43,6 +44,7 @@ public class UnzerCallbackController : Controller
         _paymentPluginManager = paymentPluginManager;
         _orderService = orderService;
         _unzerSettings = unzerSettings;
+        _unzerApiService = unzerApiService;
         _logger = logger;
         _workContext = workContext;
         _storeContext = storeContext;
@@ -71,7 +73,7 @@ public class UnzerCallbackController : Controller
         var content = string.Empty;
         using (var streamReader = new StreamReader(Request.Body))
             content = await streamReader.ReadToEndAsync();
-        
+
         var callBackReq = JsonSerializer.Deserialize<UnzerCallbackPayload>(content);
 
         if (_unzerSettings.LogCallbackPostData)
@@ -86,7 +88,7 @@ public class UnzerCallbackController : Controller
             throw new NopException(errorMsg);
         }
 
-        if(!UnzerPaymentDefaults.AllowedUrls.Any(u => callBackReq.retrieveUrl.Contains(u)))
+        if (!UnzerPaymentDefaults.AllowedUrls.Any(u => callBackReq.retrieveUrl.Contains(u)))
         {
             var errorMsg = "CallBackHandler Post - The retrieve Url is not allowed";
             await _logger.InsertLogAsync(LogLevel.Warning, errorMsg);
@@ -144,7 +146,54 @@ public class UnzerCallbackController : Controller
         }
 
         await _logger.InformationAsync("UnzerCallbackController.UnzerPaymentStatus: Return from Unzer Payment Page");
-        
+
+        var waitCnt = 3;
+        while (order.PaymentStatus == Nop.Core.Domain.Payments.PaymentStatus.Pending && waitCnt > 0)
+        {
+            var timespan = TimeSpan.FromSeconds(2);
+            await Task.Delay(timespan);
+
+            order = await _orderService.GetOrderByIdAsync(orderId);
+            waitCnt--;
+        }
+
+        var waitedFor = (3 - waitCnt) * 2;
+        await _logger.InformationAsync($"UnzerCallbackController.UnzerPaymentStatus: Return from Unzer Payment Page, waited {waitedFor} sec.");
+
+        if (order.PaymentStatus == Nop.Core.Domain.Payments.PaymentStatus.Pending)
+        {
+            return RedirectToRoute("OrderDetails", new { orderId = order.Id });
+        }
+
+        return RedirectToRoute("CheckoutCompleted", new { orderId = order.Id });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> UnzerPaymentPending(int orderId)
+    {
+        await _logger.InformationAsync("UnzerCallbackController.UnzerPaymentStatus: Return from Unzer Payment Page");
+
+        var store = await _storeContext.GetCurrentStoreAsync();
+        Order order = await _orderService.GetOrderByIdAsync(orderId);
+        if (order == null || order.Deleted)
+        {
+            return RedirectToRoute("Homepage");
+        }
+
+        var unzerPaymentType = UnzerPaymentDefaults.ReadUnzerPaymentType(order.PaymentMethodSystemName);
+        if (unzerPaymentType.Prepayment)
+        {
+            var instructionJson = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PrePaymentInstructionAttribute, store.Id);
+            var prePaymentInstModel = JsonSerializer.Deserialize<PrePaymentCompletedModel>(instructionJson);
+            return View("~/Plugins/Payments.Unzer/Views/Completed.cshtml", prePaymentInstModel);
+        }
+
+        var payPageIdent = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PayPageIdentifier, store.Id);
+        if (!string.IsNullOrEmpty(payPageIdent))
+        {
+            //var payPage = await _unzerApiService.Get
+        }
+
         var waitCnt = 3;
         while (order.PaymentStatus == Nop.Core.Domain.Payments.PaymentStatus.Pending && waitCnt > 0)
         {
