@@ -135,5 +135,12 @@ namespace Unzer.Plugin.Payments.Unzer
 
             return activePaymentTypes;
         }
+
+        public static UnzerPaymentType PaymentTypeContainsType(string paymentType)
+        {
+            var containdType = UnzerPaymentTypes.SingleOrDefault(p => paymentType.Contains(p.ShortName));
+
+            return containdType;
+        }
     }
 }

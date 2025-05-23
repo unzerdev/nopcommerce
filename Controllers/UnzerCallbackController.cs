@@ -244,12 +244,34 @@ public class UnzerCallbackController : Controller
         {            
             var curOrder = order.OrderByDescending(o => o.CreatedOnUtc).FirstOrDefault();
             if (curOrder != null)
-            {
-                var payPageIdent = await _genericAttributeService.GetAttributeAsync<string>(curOrder, UnzerPaymentDefaults.PayPageIdentifier, store.Id);
+            {                
+                await ReadPaymentInfo(curOrder, store.Id);
                 return RedirectToRoute("OrderDetails", new { orderId = curOrder.Id });
             }
         }
 
         return RedirectToRoute("HomePage");
+    }
+
+    private async Task ReadPaymentInfo(Order order, int storeId)
+    {
+        var payPageIdent = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PayPageIdentifier, storeId);
+        if (string.IsNullOrEmpty(payPageIdent))
+            return;
+
+        var payPage = await _unzerApiService.GetPayPage(payPageIdent);
+        if (payPage.IsError)
+            return;
+
+        if (payPage.Payments == null || !payPage.Payments.Any())
+            return;
+
+        var payment = payPage.Payments.First();
+        var paymentInfo = await _unzerApiService.GetPayemnt(payment.PaymentId);
+        if (paymentInfo.IsError)
+            return;
+
+        var paymentType = UnzerPaymentDefaults.PaymentTypeContainsType(paymentInfo.resources.typeId);
+
     }
 }

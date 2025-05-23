@@ -103,6 +103,25 @@ namespace Unzer.Plugin.Payments.Unzer.Services
             return response;
         }
 
+        public async Task<GetPaymentResponse> GetPayemnt(string paymentId)
+        {
+            var getPaymentReq = new GetPaymentRequest { paymentId = paymentId };
+
+            var response = await _unzerApiHttpClient.RequestAsync<GetPaymentRequest, GetPaymentResponse>(getPaymentReq);
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK && response.IsError)
+            {
+                var errMsg = response.ErrorResponse.Errors.Any() ? string.Join(",", response?.ErrorResponse.Errors.Select(e => e.merchantMessage)) : "";
+                await _logger.ErrorAsync($"UnzerApiService.GetPayemnt: Failed with call to Unzer API Client with {errMsg}");
+                response.IsSuccess = false;
+                return response;
+            }
+
+            response.IsSuccess = true;
+
+            return response;
+        }
+
+
         public async Task<PaymentApiStatus> CapturePayment(Order order, decimal capturreAmount)
         {
             var status = new PaymentApiStatus { Success = false, StatusMessage = string.Empty };
@@ -529,5 +548,6 @@ namespace Unzer.Plugin.Payments.Unzer.Services
 
             return prePaymentChargeRersponse;
         }
+
     }
 }
