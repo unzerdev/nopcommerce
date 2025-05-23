@@ -140,8 +140,7 @@ namespace Unzer.Plugin.Payments.Unzer
 
                 _httpContextAccessor.HttpContext.Response.Redirect(redirect);
             }
-
-            if ((isRecurring || canAutoCapture || onlySupportsCharge) && unzerPaymentType.SupportCharge)
+            else if ((isRecurring || canAutoCapture || onlySupportsCharge) && unzerPaymentType.SupportCharge)
             {
                 var payRespons = await _unzerApiService.CreateCapturePayment(order, isRecurring, unzerCustomerId, unzerBasketID);
 

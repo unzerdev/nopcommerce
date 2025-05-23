@@ -182,19 +182,19 @@ public class UnzerCallbackController : Controller
             return RedirectToRoute("Homepage");
         }
 
-        var unzerPaymentType = UnzerPaymentDefaults.ReadUnzerPaymentType(order.PaymentMethodSystemName);
-        if (unzerPaymentType.Prepayment)
-        {
-            var instructionJson = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PrePaymentInstructionAttribute, store.Id);
-            var prePaymentInstModel = JsonSerializer.Deserialize<PrePaymentCompletedModel>(instructionJson);
-            return View("~/Plugins/Payments.Unzer/Views/Completed.cshtml", prePaymentInstModel);
-        }
+        //var unzerPaymentType = UnzerPaymentDefaults.ReadUnzerPaymentType(order.PaymentMethodSystemName);
+        //if (unzerPaymentType.Prepayment)
+        //{
+        //    var instructionJson = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PrePaymentInstructionAttribute, store.Id);
+        //    var prePaymentInstModel = JsonSerializer.Deserialize<PrePaymentCompletedModel>(instructionJson);
+        //    return View("~/Plugins/Payments.Unzer/Views/Completed.cshtml", prePaymentInstModel);
+        //}
 
-        var payPageIdent = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PayPageIdentifier, store.Id);
-        if (!string.IsNullOrEmpty(payPageIdent))
-        {
-            var payPage = await _unzerApiService.GetPayPage(payPageIdent);
-        }
+        //var payPageIdent = await _genericAttributeService.GetAttributeAsync<string>(order, UnzerPaymentDefaults.PayPageIdentifier, store.Id);
+        //if (!string.IsNullOrEmpty(payPageIdent))
+        //{
+        //    var payPage = await _unzerApiService.GetPayPage(payPageIdent);
+        //}
 
         var waitCnt = 3;
         while (order.PaymentStatus == Nop.Core.Domain.Payments.PaymentStatus.Pending && waitCnt > 0)
