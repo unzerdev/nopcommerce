@@ -178,7 +178,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : null,
                 resources = new V2Resources
                 {
-                    customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
+                    customerId = !string.IsNullOrEmpty(unzerCustomerId) ? unzerCustomerId : null,
                     metadataId = _unzerPaymentSettings.UnzerMetadataId,
                     basketId = !string.IsNullOrEmpty(basketId) ? basketId : null
                 },
@@ -298,7 +298,7 @@ namespace Unzer.Plugin.Payments.Unzer.Infrastructure
                 recurrenceType = isRecurring ? PayPageRecurrenceType.scheduled : null,
                 resources = new V2Resources
                 {
-                    customerId = !string.IsNullOrEmpty(unzerCustomerId) ? customer.CustomerGuid.ToString() : null,
+                    customerId = !string.IsNullOrEmpty(unzerCustomerId) ? unzerCustomerId : null,
                     metadataId = _unzerPaymentSettings.UnzerMetadataId,
                     basketId = !string.IsNullOrEmpty(basketId) ? basketId : null
                 },
