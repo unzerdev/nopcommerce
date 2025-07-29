@@ -82,7 +82,7 @@ namespace Unzer.Plugin.Payments.Unzer
                     SupportAuthurize = true,
                     SupportCharge = true,
                     Deprecated = false,
-                    CheckoutType = PayPageCheckoutType.full
+                    CheckoutType = PayPageCheckoutType.payment_only
                 };
             }
 
@@ -102,7 +102,8 @@ namespace Unzer.Plugin.Payments.Unzer
                     SystemName = "Payments.Unzer",
                     SupportAuthurize = true,
                     SupportCharge = true,
-                    Deprecated = false
+                    Deprecated = false,
+                    CheckoutType = PayPageCheckoutType.payment_only
                 };
             }
 

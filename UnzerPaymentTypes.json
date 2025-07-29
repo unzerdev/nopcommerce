@@ -60,7 +60,7 @@
     "SupportCharge": true,
     "Deprecated": false,
     "Prepayment": false,
-    "CheckoutType": 0,
+    "CheckoutType": null,
     "PaypageInfo": {
       "Name": "cards",
       "Attributes": [
@@ -148,7 +148,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
-    "CheckoutType": 0,
+    "CheckoutType": null,
     "PaypageInfo": {
       "Name": "klarna",
       "Attributes": [
@@ -279,7 +279,7 @@
     "SupportCharge": true,
     "Deprecated": false,
     "Prepayment": false,
-    "CheckoutType": 0,
+    "CheckoutType": null,
     "PaypageInfo": {
       "Name": "openbankingpis",
       "Attributes": [
@@ -297,7 +297,7 @@
     "SupportCharge": true,
     "Deprecated": false,
     "Prepayment": false,
-    "CheckoutType": 0,
+    "CheckoutType": null,
     "PaypageInfo": {
       "Name": "sepaDirectDebit",
       "Attributes": [
@@ -316,7 +316,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
-    "CheckoutType": 0,
+    "CheckoutType": null,
     "PaypageInfo": {
       "Name": "paylaterDirectDebit",
       "Attributes": [
@@ -334,7 +334,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
-    "CheckoutType": 0,
+    "CheckoutType": null,
     "PaypageInfo": {
       "Name": "paylaterInstallment",
       "Attributes": [
@@ -352,7 +352,7 @@
     "SupportCharge": false,
     "Deprecated": false,
     "Prepayment": false,
-    "CheckoutType": 0,
+    "CheckoutType": null,
     "PaypageInfo": {
       "Name": "paylaterInvoice",
       "Attributes": [
@@ -427,7 +427,7 @@
   },
   {
     "Name": "Giropay",
-    "ShortName": "piv",
+    "ShortName": "gpay",
     "SystemName": "Payments.Unzer.giropay",
     "UnzerName": "giropay",
     "SupportAuthurize": false,
