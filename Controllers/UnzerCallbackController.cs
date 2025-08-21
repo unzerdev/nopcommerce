@@ -121,12 +121,6 @@ public class UnzerCallbackController : Controller
             }
         });
 
-        //if (callBackReq.Event.StartsWith("authorize."))
-        //    await _authEventHandler.HandleEvent(callBackReq);
-
-        //if (callBackReq.Event.StartsWith("charge."))
-        //    await _captEventHandler.HandleEvent(callBackReq);
-
         return Ok();
     }
 
@@ -245,7 +239,6 @@ public class UnzerCallbackController : Controller
             var curOrder = order.OrderByDescending(o => o.CreatedOnUtc).FirstOrDefault();
             if (curOrder != null)
             {                
-                await ReadPaymentInfo(curOrder, store.Id);
                 return RedirectToRoute("OrderDetails", new { orderId = curOrder.Id });
             }
         }
