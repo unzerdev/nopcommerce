@@ -15,7 +15,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "DE", "AT", "BE", "IT", "ES", "NL" ],
+    "CountryRestrictions": [ "DE", "AT", "BE", "IT", "ES", "NL" ],
     "CurrencyRestrictions": [ "AUD", "CAD", "CHF", "CNY", "EUR", "GBP", "HKD", "NZD", "SGD", "USD" ]
   },
   {
@@ -35,7 +35,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [],
+    "CountryRestrictions": [],
     "CurrencyRestrictions": [ "AUD", "CHF", "CZK", "DKK", "EUR", "GBP", "NOK", "PLN", "SEK", "USD", "HUF", "RON", "BGN", "HRK", "ISK" ]
   },
   {
@@ -54,7 +54,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "BE" ],
+    "CountryRestrictions": [ "BE" ],
     "CurrencyRestrictions": [ "EUR" ]
   },
   {
@@ -76,7 +76,7 @@
         "exemption"
       ]
     },
-    "ContryRestrictions": [],
+    "CountryRestrictions": [],
     "CurrencyRestrictions": []
   },
   {
@@ -113,7 +113,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "AT" ],
+    "CountryRestrictions": [ "AT" ],
     "CurrencyRestrictions": [ "EUR" ]
   },
   {
@@ -132,7 +132,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [],
+    "CountryRestrictions": [],
     "CurrencyRestrictions": []
   },
   {
@@ -150,7 +150,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "NL" ],
+    "CountryRestrictions": [ "NL" ],
     "CurrencyRestrictions": [ "EUR" ]
   },
   {
@@ -170,7 +170,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [],
+    "CountryRestrictions": [],
     "CurrencyRestrictions": []
   },
   {
@@ -190,7 +190,7 @@
         "credentialOnFile"
       ]
     },
-    "ContryRestrictions": [],
+    "CountryRestrictions": [],
     "CurrencyRestrictions": []
   },
   {
@@ -209,7 +209,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "PL", "CZ" ],
+    "CountryRestrictions": [ "PL", "CZ" ],
     "CurrencyRestrictions": [ "CZK", "PLN" ]
   },
   {
@@ -228,7 +228,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "PL" ],
+    "CountryRestrictions": [ "PL" ],
     "CurrencyRestrictions": [ "EUR", "PLN" ]
   },
   {
@@ -247,7 +247,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "CH" ],
+    "CountryRestrictions": [ "CH" ],
     "CurrencyRestrictions": [ "CHF" ]
   },
   {
@@ -266,7 +266,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "CH" ],
+    "CountryRestrictions": [ "CH" ],
     "CurrencyRestrictions": [ "CHF" ]
   },
   {
@@ -285,7 +285,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "CH" ],
+    "CountryRestrictions": [ "CH" ],
     "CurrencyRestrictions": [ "CHF" ]
   },
   {
@@ -305,7 +305,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "DE", "AT", "DK", "GB", "SE", "NO", "FR", "PL" ],
+    "CountryRestrictions": [ "DE", "AT", "DK", "GB", "SE", "NO", "FR", "PL" ],
     "CurrencyRestrictions": [ "EUR" ]
   },
   {
@@ -326,7 +326,7 @@
         "credentialOnFile"
       ]
     },
-    "ContryRestrictions": [
+    "CountryRestrictions": [
       "FI",
       "AD",
       "AT",
@@ -394,7 +394,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "DE", "AT" ],
+    "CountryRestrictions": [ "DE", "AT" ],
     "CurrencyRestrictions": [ "EUR" ]
   },
   {
@@ -414,7 +414,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "DE", "AT", "CH" ],
+    "CountryRestrictions": [ "DE", "AT", "CH" ],
     "CurrencyRestrictions": [ "EUR", "CHF" ]
   },
   {
@@ -434,7 +434,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "DE", "AT", "CH", "NL" ],
+    "CountryRestrictions": [ "DE", "AT", "CH", "NL" ],
     "CurrencyRestrictions": [ "EUR", "CHF" ]
   },
   {
@@ -453,7 +453,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE" ],
+    "CountryRestrictions": [ "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE" ],
     "CurrencyRestrictions": [ "EUR", "CHF" ]
   },
   {
@@ -472,7 +472,7 @@
         "Order"
       ]
     },
-    "ContryRestrictions": [ "AT", "BE", "DK", "FI", "FR", "DE", "ES", "GB", "GR", "HU", "IE", "IS", "IT", "LI", "LU", "MT", "NL", "NO", "PT", "SE" ],
+    "CountryRestrictions": [ "AT", "BE", "DK", "FI", "FR", "DE", "ES", "GB", "GR", "HU", "IE", "IS", "IT", "LI", "LU", "MT", "NL", "NO", "PT", "SE" ],
     "CurrencyRestrictions": [ "CHF", "CNY", "EUR", "GBP", "USD" ]
   },
   {
