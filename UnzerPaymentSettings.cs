@@ -18,6 +18,8 @@ namespace Unzer.Plugin.Payments.Unzer
         public List<string> SelectedPaymentTypes { get; set; }
         public List<string> AvailablePaymentTypes { get; set; }
         public bool SkipPaymentInfo { get; set; }
+        public bool EnforceCountryRestriction { get; set; }
+        public bool EnforceCurrencyRestriction { get; set; }
         public string CurrencyCode { get; set; }
         public decimal AdditionalFeePercentage { get; set; }
         public AutoCapture AutoCapture { get; set; }

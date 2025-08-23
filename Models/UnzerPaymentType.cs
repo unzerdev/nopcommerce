@@ -16,6 +16,8 @@ public class UnzerPaymentType
     public string? Supplements { get; set; }
     public PayPageCheckoutType? CheckoutType { get; set; }
     public PaypageInfo PaypageInfo { get; set; }
+    public string[] ContryRestrictions { get; set; }
+    public string[] CurrencyRestrictions { get; set; }
 }
 
 public class PaypageInfo

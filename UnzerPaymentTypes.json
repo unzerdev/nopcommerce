@@ -14,7 +14,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "DE", "AT", "BE", "IT", "ES", "NL" ],
+    "CurrencyRestrictions": [ "AUD", "CAD", "CHF", "CNY", "EUR", "GBP", "HKD", "NZD", "SGD", "USD" ]
   },
   {
     "Name": "Apple Pay",
@@ -32,7 +34,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [],
+    "CurrencyRestrictions": [ "AUD", "CHF", "CZK", "DKK", "EUR", "GBP", "NOK", "PLN", "SEK", "USD", "HUF", "RON", "BGN", "HRK", "ISK" ]
   },
   {
     "Name": "Bancontact",
@@ -49,7 +53,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "BE" ],
+    "CurrencyRestrictions": [ "EUR" ]
   },
   {
     "Name": "Card",
@@ -69,7 +75,9 @@
         "credentialOnFile",
         "exemption"
       ]
-    }
+    },
+    "ContryRestrictions": [],
+    "CurrencyRestrictions": []
   },
   {
     "Name": "ClickToPay",
@@ -81,7 +89,7 @@
     "Deprecated": false,
     "Prepayment": false,
     "IsSupplement": true,
-    "Supplements" : "card",
+    "Supplements": "card",
     "PaypageInfo": {
       "Name": "clicktopay",
       "Attributes": [
@@ -104,7 +112,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "AT" ],
+    "CurrencyRestrictions": [ "EUR" ]
   },
   {
     "Name": "Google Pay",
@@ -121,7 +131,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [],
+    "CurrencyRestrictions": []
   },
   {
     "Name": "iDEAL",
@@ -137,7 +149,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "NL" ],
+    "CurrencyRestrictions": [ "EUR" ]
   },
   {
     "Name": "Klarna",
@@ -155,7 +169,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [],
+    "CurrencyRestrictions": []
   },
   {
     "Name": "PayPal",
@@ -173,7 +189,9 @@
         "Order",
         "credentialOnFile"
       ]
-    }
+    },
+    "ContryRestrictions": [],
+    "CurrencyRestrictions": []
   },
   {
     "Name": "PayU",
@@ -190,7 +208,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "PL", "CZ" ],
+    "CurrencyRestrictions": [ "CZK", "PLN" ]
   },
   {
     "Name": "Przelewy24",
@@ -207,7 +227,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "PL" ],
+    "CurrencyRestrictions": [ "EUR", "PLN" ]
   },
   {
     "Name": "PostFinance card",
@@ -224,7 +246,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "CH" ],
+    "CurrencyRestrictions": [ "CHF" ]
   },
   {
     "Name": "PostFinance eFinance",
@@ -241,17 +265,9 @@
         "Enabled",
         "Order"
       ]
-    }
-  },
-  {
-    "Name": "Sofort",
-    "ShortName": "sft",
-    "SystemName": "Payments.Unzer.sofort",
-    "UnzerName": "sofort",
-    "SupportAuthurize": false,
-    "SupportCharge": true,
-    "Deprecated": true,
-    "Prepayment": false
+    },
+    "ContryRestrictions": [ "CH" ],
+    "CurrencyRestrictions": [ "CHF" ]
   },
   {
     "Name": "TWINT",
@@ -268,7 +284,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "CH" ],
+    "CurrencyRestrictions": [ "CHF" ]
   },
   {
     "Name": "Unzer Bank Transfer",
@@ -286,7 +304,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "DE", "AT", "DK", "GB", "SE", "NO", "FR", "PL" ],
+    "CurrencyRestrictions": [ "EUR" ]
   },
   {
     "Name": "Unzer Direct Debit",
@@ -305,7 +325,57 @@
         "Order",
         "credentialOnFile"
       ]
-    }
+    },
+    "ContryRestrictions": [
+      "FI",
+      "AD",
+      "AT",
+      "PT",
+      "BE",
+      "BG",
+      "ES",
+      "HR",
+      "CY",
+      "CZ",
+      "DK",
+      "EE",
+      "FI",
+      "FR",
+      "GF",
+      "DE",
+      "GI",
+      "GR",
+      "GP",
+      "HU",
+      "IS",
+      "IE",
+      "IT",
+      "LV",
+      "LI",
+      "LT",
+      "LU",
+      "PT",
+      "MT",
+      "MQ",
+      "YT",
+      "MC",
+      "NL",
+      "NO",
+      "PL",
+      "PT",
+      "RE",
+      "RO",
+      "BL",
+      "MF",
+      "PM",
+      "SK",
+      "SI",
+      "ES",
+      "SE",
+      "CH",
+      "GB"
+    ],
+    "CurrencyRestrictions": [ "EUR" ]
   },
   {
     "Name": "Direct Debit Secured",
@@ -323,7 +393,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "DE", "AT" ],
+    "CurrencyRestrictions": [ "EUR" ]
   },
   {
     "Name": "Unzer Installment",
@@ -341,7 +413,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "DE", "AT", "CH" ],
+    "CurrencyRestrictions": [ "EUR", "CHF" ]
   },
   {
     "Name": "Unzer Invoice",
@@ -359,7 +433,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "DE", "AT", "CH", "NL" ],
+    "CurrencyRestrictions": [ "EUR", "CHF" ]
   },
   {
     "Name": "Unzer Prepayment",
@@ -376,7 +452,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE" ],
+    "CurrencyRestrictions": [ "EUR", "CHF" ]
   },
   {
     "Name": "WeChat Pay",
@@ -393,7 +471,9 @@
         "Enabled",
         "Order"
       ]
-    }
+    },
+    "ContryRestrictions": [ "AT", "BE", "DK", "FI", "FR", "DE", "ES", "GB", "GR", "HU", "IE", "IS", "IT", "LI", "LU", "MT", "NL", "NO", "PT", "SE" ],
+    "CurrencyRestrictions": [ "CHF", "CNY", "EUR", "GBP", "USD" ]
   },
   {
     "Name": "Direct Debit Secured",
@@ -430,6 +510,16 @@
     "ShortName": "gpay",
     "SystemName": "Payments.Unzer.giropay",
     "UnzerName": "giropay",
+    "SupportAuthurize": false,
+    "SupportCharge": true,
+    "Deprecated": true,
+    "Prepayment": false
+  },
+  {
+    "Name": "Sofort",
+    "ShortName": "sft",
+    "SystemName": "Payments.Unzer.sofort",
+    "UnzerName": "sofort",
     "SupportAuthurize": false,
     "SupportCharge": true,
     "Deprecated": true,

@@ -381,6 +381,12 @@ namespace Unzer.Plugin.Payments.Unzer
                 ["Plugins.Payments.Unzer.PaymentMethod.DefaultMethodDescription"] = "Unzer Payments",
                 ["Plugins.Payments.Unzer.PaymentMethod.Prepayment.Instructions"] = "Please transfer the amount of {0} to the following account:",
                 ["Plugins.Payments.Unzer.PaymentMethod.Prepayment.Reference"] = "Please use only this indentification number as the descriptor:",
+
+                ["Plugins.Payments.Unzer.Fields.EnforceCountryRestriction"] = "Håndhæv landerestriktioner",
+                ["Plugins.Payments.Unzer.Fields.EnforceCountryRestriction.Hint"] = "Alle Unzer betalings metoder kan være knyttet til specifkke landerestriktioner",
+
+                ["Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction"] = "Håndhæv valuta restriktioner",
+                ["Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction.Hint"] = "Nogle Unzer betalings metoder kan være knyttet til specifikke valutarestriktioner",
             });
 
             await base.InstallAsync();
