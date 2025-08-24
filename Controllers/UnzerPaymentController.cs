@@ -6,6 +6,7 @@ using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Messages;
+using Nop.Services.Payments;
 using Nop.Services.Security;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Controllers;
@@ -282,6 +283,21 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
                 metadatId = metadataResult.ResponseId;
 
             return metadatId;
+        }
+
+        private async Task HandleContryRestrictions(UnzerPaymentSettings unzerPaymentSettings)
+        {
+            var settingKey = string.Format(NopPaymentDefaults.RestrictedCountriesSettingName, UnzerPaymentDefaults.SystemName);
+            var unzerContryRestrictSettings = await _settingService.GetSettingByKeyAsync<List<int>>(settingKey) ?? new List<int>();
+
+            if (unzerPaymentSettings.EnforceCountryRestriction)
+            {
+
+            }
+            else
+            {
+
+            }
         }
     }
 }
