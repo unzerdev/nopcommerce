@@ -113,6 +113,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             var selectedPayments = model.SelectedPaymentTypes != null && model.SelectedPaymentTypes.Count > 1 ? model.SelectedPaymentTypes.Where(p => p != "All").ToList() : new List<string> { "All" };
 
             var apiKeyHasChanged = model.UnzerApiKey != null && model.UnzerApiKey != settings.UnzerApiKey;
+            var countryRestrictionHasChanged = model.EnforceCountryRestriction != settings.EnforceCountryRestriction;
 
             settings.UnzerApiBaseUrl = model.UnzerApiBaseUrl;
             settings.UnzerTokenUrl = model.UnzerTokenUrl;
@@ -156,6 +157,11 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             {
                 _unzerApiService.UnzerPaymentSettings = settings;
                 await ManageUnzerSettings(settings, apiKeyHasChanged);                
+            }
+
+            if(countryRestrictionHasChanged)
+            {
+                await HandleContryRestrictions(settings);
             }
 
             await _settingService.ClearCacheAsync();
@@ -273,6 +279,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
                     unzerPaymentSettings.AvailablePaymentTypes.Insert(0, "All");
                 }
             }
+
         }
 
         private async Task<string> SetUnzerMetadataAsync()
@@ -289,6 +296,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
         {
             var settingKey = string.Format(NopPaymentDefaults.RestrictedCountriesSettingName, UnzerPaymentDefaults.SystemName);
             var unzerContryRestrictSettings = await _settingService.GetSettingByKeyAsync<List<int>>(settingKey) ?? new List<int>();
+            var paymentMethods = unzerPaymentSettings.SelectedPaymentTypes.Select(p => UnzerPaymentDefaults.ReadPaymentTypeByUnzerName(p)).ToList();
 
             if (unzerPaymentSettings.EnforceCountryRestriction)
             {
