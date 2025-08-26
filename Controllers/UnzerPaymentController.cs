@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core;
 using Nop.Services;
 using Nop.Services.Configuration;
+using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Messages;
@@ -28,6 +29,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
         private readonly ISettingService _settingService;
         private readonly IStoreContext _storeContext;
         private readonly IUnzerApiService _unzerApiService;
+        private readonly ICountryService _countryService;
         private readonly ILogger _logger;
 
         public UnzerPaymentController(ILocalizationService localizationService,
@@ -35,6 +37,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             ISettingService settingService,
             IStoreContext storeContext,
             IUnzerApiService unzerApiService,
+            ICountryService countryService,
             ILogger logger)
         {
             _localizationService = localizationService;
@@ -42,6 +45,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             _settingService = settingService;
             _storeContext = storeContext;
             _unzerApiService = unzerApiService;
+            _countryService = countryService;
             _logger = logger;
         }
 
@@ -63,6 +67,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
                 TagLine = unzerPaymentSettings.TagLine,
                 SelectedPaymentTypes= unzerPaymentSettings.SelectedPaymentTypes,
                 CurrencyCode = unzerPaymentSettings.CurrencyCode,
+                EnforceCountryRestriction = unzerPaymentSettings.EnforceCountryRestriction,
+                EnforceCurrencyRestriction = unzerPaymentSettings.EnforceCurrencyRestriction,
                 AdditionalFeePercentage = unzerPaymentSettings.AdditionalFeePercentage,
                 AutoCapture = unzerPaymentSettings.AutoCapture,
                 AutoCaptureOptions = await unzerPaymentSettings.AutoCapture.ToSelectListAsync(),
@@ -81,6 +87,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
                 model.TagLine_OverrideForStore = await _settingService.SettingExistsAsync(unzerPaymentSettings, setting => setting.TagLine, storeId);
                 model.PaymentMethods_OverrideForStore = await _settingService.SettingExistsAsync(unzerPaymentSettings, setting => setting.SelectedPaymentTypes, storeId);
                 model.CurrencyCode_OverrideForStore = await _settingService.SettingExistsAsync(unzerPaymentSettings, setting => setting.CurrencyCode, storeId);
+                model.EnforceCountryRestriction_OverrideForStore = await _settingService.SettingExistsAsync(unzerPaymentSettings, setting => setting.EnforceCountryRestriction, storeId);
+                model.EnforceCurrencyRestriction_OverrideForStore = await _settingService.SettingExistsAsync(unzerPaymentSettings, setting => setting.EnforceCurrencyRestriction, storeId);
                 model.LogCallbackPostData_OverrideForStore = await _settingService.SettingExistsAsync(unzerPaymentSettings, setting => setting.LogCallbackPostData, storeId);
                 model.SkipPaymentInfo_OverrideForStore = await _settingService.SettingExistsAsync(unzerPaymentSettings, setting => setting.SkipPaymentInfo, storeId);
                 model.AutoCapture_OverrideForStore = await _settingService.SettingExistsAsync(unzerPaymentSettings, setting => setting.AutoCapture, storeId);
@@ -125,6 +133,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             settings.TagLine = model.TagLine;
             settings.SelectedPaymentTypes = selectedPayments;
             settings.CurrencyCode = model.CurrencyCode;
+            settings.EnforceCountryRestriction = model.EnforceCountryRestriction;
+            settings.EnforceCurrencyRestriction = model.EnforceCurrencyRestriction;
             settings.LogCallbackPostData = model.LogCallbackPostData;
             settings.SkipPaymentInfo = model.SkipPaymentInfo;            
             settings.AutoCapture = (AutoCapture)model.AutoCapture;
@@ -141,6 +151,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.TagLine, model.TagLine_OverrideForStore, storeId, false);            
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.SelectedPaymentTypes, model.PaymentMethods_OverrideForStore, storeId, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.CurrencyCode, model.CurrencyCode_OverrideForStore, storeId, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.EnforceCountryRestriction, model.EnforceCountryRestriction_OverrideForStore, storeId, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.EnforceCurrencyRestriction, model.EnforceCurrencyRestriction_OverrideForStore, storeId, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.LogCallbackPostData, model.LogCallbackPostData_OverrideForStore, storeId, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.SkipPaymentInfo, model.SkipPaymentInfo_OverrideForStore, storeId, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(settings, setting => setting.AutoCapture, model.AutoCapture_OverrideForStore, storeId, false);
@@ -294,17 +306,34 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
 
         private async Task HandleContryRestrictions(UnzerPaymentSettings unzerPaymentSettings)
         {
-            var settingKey = string.Format(NopPaymentDefaults.RestrictedCountriesSettingName, UnzerPaymentDefaults.SystemName);
-            var unzerContryRestrictSettings = await _settingService.GetSettingByKeyAsync<List<int>>(settingKey) ?? new List<int>();
             var paymentMethods = unzerPaymentSettings.SelectedPaymentTypes.Select(p => UnzerPaymentDefaults.ReadPaymentTypeByUnzerName(p)).ToList();
 
-            if (unzerPaymentSettings.EnforceCountryRestriction)
+            foreach (var method in paymentMethods.Where(p => p.CountryRestrictions.Any()))
             {
+                var settingKey = string.Format(NopPaymentDefaults.RestrictedCountriesSettingName, method.SystemName);
+                var unzerCountryRestricttions = await _settingService.GetSettingByKeyAsync<List<int>>(settingKey) ?? new List<int>();
 
-            }
-            else
-            {
+                if (!unzerPaymentSettings.EnforceCountryRestriction && unzerCountryRestricttions.Any())
+                {
+                    await _settingService.SetSettingAsync<List<int>>(settingKey, new List<int>());
+                    continue;
+                }
 
+                if (method.CountryRestrictions.Length != unzerCountryRestricttions.Count())
+                {
+                    foreach (var countryCode in method.CountryRestrictions)
+                    {
+                        var country = await _countryService.GetCountryByTwoLetterIsoCodeAsync(countryCode);
+                        if (country == null)
+                            continue;
+                        if (unzerCountryRestricttions.Contains(country.Id))
+                            continue;
+
+                        unzerCountryRestricttions.Add(country.Id);
+                    }
+
+                    await _settingService.SetSettingAsync<List<int>>(settingKey, unzerCountryRestricttions);
+                }
             }
         }
     }

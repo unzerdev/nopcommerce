@@ -76,9 +76,11 @@ namespace Unzer.Plugin.Payments.Unzer.Models
 
         [NopResourceDisplayName("Plugins.Payments.Unzer.Fields.EnforceCountryRestriction")]
         public bool EnforceCountryRestriction { get; set; }
+        public bool EnforceCountryRestriction_OverrideForStore { get; set; }
 
         [NopResourceDisplayName("Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction")]
         public bool EnforceCurrencyRestriction { get; set; }
+        public bool EnforceCurrencyRestriction_OverrideForStore { get; set; }
 
         public bool CurrencyCode_OverrideForStore { get; set; }
 

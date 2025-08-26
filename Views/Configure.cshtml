@@ -131,6 +131,29 @@
                         <span asp-validation-for="CurrencyCode"></span>
                     </div>
                 </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="EnforceCountryRestriction_OverrideForStore" asp-input="EnforceCountryRestriction" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="EnforceCountryRestriction" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="EnforceCountryRestriction" />
+                        <span asp-validation-for="EnforceCountryRestriction"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="EnforceCurrencyRestriction_OverrideForStore" asp-input="EnforceCurrencyRestriction" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="EnforceCurrencyRestriction" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="EnforceCurrencyRestriction" />
+                        <span asp-validation-for="EnforceCurrencyRestriction"></span>
+                    </div>
+                </div>
+
                 <div class="form-group row">
                     <div class="col-md-3">
                         <nop-override-store-checkbox asp-for="LogCallbackPostData_OverrideForStore" asp-input="LogCallbackPostData" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
