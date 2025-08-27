@@ -382,11 +382,11 @@ namespace Unzer.Plugin.Payments.Unzer
                 ["Plugins.Payments.Unzer.PaymentMethod.Prepayment.Instructions"] = "Please transfer the amount of {0} to the following account:",
                 ["Plugins.Payments.Unzer.PaymentMethod.Prepayment.Reference"] = "Please use only this indentification number as the descriptor:",
 
-                ["Plugins.Payments.Unzer.Fields.EnforceCountryRestriction"] = "Håndhæv landerestriktioner",
-                ["Plugins.Payments.Unzer.Fields.EnforceCountryRestriction.Hint"] = "Alle Unzer betalings metoder kan være knyttet til specifkke landerestriktioner",
+                ["Plugins.Payments.Unzer.Fields.EnforceCountryRestriction"] = "Enforce country restrictions",
+                ["Plugins.Payments.Unzer.Fields.EnforceCountryRestriction.Hint"] = "All Unzer payment methods can be related to specific country restrictions",
 
-                ["Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction"] = "Håndhæv valuta restriktioner",
-                ["Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction.Hint"] = "Nogle Unzer betalings metoder kan være knyttet til specifikke valutarestriktioner",
+                ["Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction"] = "Enforce currency restrictions",
+                ["Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction.Hint"] = "Some Unzer payment methods can be related to specific currency restrictions",
             });
 
             await base.InstallAsync();
@@ -429,6 +429,17 @@ namespace Unzer.Plugin.Payments.Unzer
                 {
                     await _logger.ErrorAsync($"Updating metadata in Unzer Payment faliled with: {updMetaResult.StatusMessage}");
                 }
+            }
+
+            if(targetVersion == "2.11.0")
+            {
+                await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
+                {
+                    ["Plugins.Payments.Unzer.Fields.EnforceCountryRestriction"] = "Enforce country restrictions",
+                    ["Plugins.Payments.Unzer.Fields.EnforceCountryRestriction.Hint"] = "All Unzer payment methods can be related to specific country restrictions",
+                    ["Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction"] = "Enforce currency restrictions",
+                    ["Plugins.Payments.Unzer.Fields.EnforceCurrencyRestriction.Hint"] = "Some Unzer payment methods can be related to specific currency restrictions",
+                });
             }
 
             if (targetVersion == "2.10.0")

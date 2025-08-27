@@ -315,7 +315,8 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
 
                 if (!unzerPaymentSettings.EnforceCountryRestriction && unzerCountryRestricttions.Any())
                 {
-                    await _settingService.SetSettingAsync<List<int>>(settingKey, new List<int>());
+                    var restrictSetting = _settingService.GetSetting(settingKey);
+                    await _settingService.DeleteSettingAsync(restrictSetting);                    
                     continue;
                 }
 

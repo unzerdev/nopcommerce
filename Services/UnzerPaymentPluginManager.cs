@@ -29,11 +29,11 @@ public class UnzerPaymentPluginManager : PaymentPluginManager
     {
         var activePlugins = await LoadActivePluginsAsync(_paymentSettings.ActivePaymentMethodSystemNames, customer, storeId);
 
+        activePlugins = (await BuildUnzerPaymentMethods(activePlugins.ToList(), customer, storeId)).ToList();
+
         //filter by country
         if (countryId > 0)
             activePlugins = await activePlugins.WhereAwait(async method => !(await GetRestrictedCountryIdsAsync(method)).Contains(countryId)).ToListAsync();
-
-        activePlugins = (await BuildUnzerPaymentMethods(activePlugins.ToList(), customer, storeId)).ToList();
 
         return activePlugins;
     }
