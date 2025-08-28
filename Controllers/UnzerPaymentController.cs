@@ -27,6 +27,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
         private readonly ILocalizationService _localizationService;
         private readonly INotificationService _notificationService;
         private readonly ISettingService _settingService;
+        private readonly ICurrencyService _currencyService;
         private readonly IStoreContext _storeContext;
         private readonly IUnzerApiService _unzerApiService;
         private readonly ICountryService _countryService;
@@ -35,6 +36,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
         public UnzerPaymentController(ILocalizationService localizationService,
             INotificationService notificationService,
             ISettingService settingService,
+            ICurrencyService currencyService,
             IStoreContext storeContext,
             IUnzerApiService unzerApiService,
             ICountryService countryService,
@@ -43,6 +45,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             _localizationService = localizationService;
             _notificationService = notificationService;
             _settingService = settingService;
+            _currencyService = currencyService;
             _storeContext = storeContext;
             _unzerApiService = unzerApiService;
             _countryService = countryService;
@@ -122,6 +125,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
 
             var apiKeyHasChanged = model.UnzerApiKey != null && model.UnzerApiKey != settings.UnzerApiKey;
             var countryRestrictionHasChanged = model.EnforceCountryRestriction != settings.EnforceCountryRestriction;
+            var methodSelectionHasChanged = model.SelectedPaymentTypes.Except(settings.SelectedPaymentTypes);
 
             settings.UnzerApiBaseUrl = model.UnzerApiBaseUrl;
             settings.UnzerTokenUrl = model.UnzerTokenUrl;
@@ -310,15 +314,25 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
 
             foreach (var method in paymentMethods.Where(p => p.CountryRestrictions.Any()))
             {
-                var settingKey = string.Format(NopPaymentDefaults.RestrictedCountriesSettingName, method.SystemName);
-                var unzerCountryRestricttions = await _settingService.GetSettingByKeyAsync<List<int>>(settingKey) ?? new List<int>();
+                var countrySettingKey = string.Format(NopPaymentDefaults.RestrictedCountriesSettingName, method.SystemName);
+                var currencySettingKey = string.Format(UnzerPaymentDefaults.RestrictedCurrencySettingName, method.SystemName);
+                var unzerCountryRestricttions = await _settingService.GetSettingByKeyAsync<List<int>>(countrySettingKey) ?? new List<int>();
+                var unzerCurrencyRestricttions = await _settingService.GetSettingByKeyAsync<List<int>>(currencySettingKey) ?? new List<int>();
 
                 if (!unzerPaymentSettings.EnforceCountryRestriction && unzerCountryRestricttions.Any())
                 {
-                    var restrictSetting = _settingService.GetSetting(settingKey);
+                    var restrictSetting = _settingService.GetSetting(countrySettingKey);
                     await _settingService.DeleteSettingAsync(restrictSetting);                    
                     continue;
                 }
+
+                if (!unzerPaymentSettings.EnforceCurrencyRestriction && unzerCurrencyRestricttions.Any())
+                {
+                    var restrictSetting = _settingService.GetSetting(currencySettingKey);
+                    await _settingService.DeleteSettingAsync(restrictSetting);
+                    continue;
+                }
+
 
                 if (method.CountryRestrictions.Length != unzerCountryRestricttions.Count())
                 {
@@ -333,7 +347,23 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
                         unzerCountryRestricttions.Add(country.Id);
                     }
 
-                    await _settingService.SetSettingAsync<List<int>>(settingKey, unzerCountryRestricttions);
+                    await _settingService.SetSettingAsync<List<int>>(countrySettingKey, unzerCountryRestricttions);
+                }
+
+                if (method.CurrencyRestrictions.Length != unzerCurrencyRestricttions.Count())
+                {
+                    foreach (var currencyCode in method.CurrencyRestrictions)
+                    {
+                        var currency = await _currencyService.GetCurrencyByCodeAsync(currencyCode);
+                        if (currency == null)
+                            continue;
+                        if (unzerCurrencyRestricttions.Contains(currency.Id))
+                            continue;
+
+                        unzerCurrencyRestricttions.Add(currency.Id);
+                    }
+
+                    await _settingService.SetSettingAsync<List<int>>(currencySettingKey, unzerCurrencyRestricttions);
                 }
             }
         }

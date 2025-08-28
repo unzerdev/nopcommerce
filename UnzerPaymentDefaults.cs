@@ -42,6 +42,7 @@ namespace Unzer.Plugin.Payments.Unzer
 
         public static string PrePaymentInstructionAttribute => "UnzerPrePaymentsInstruction";
         public static string PayPageIdentifier => "UnzerPayPageIdentifier";
+        public static string RestrictedCurrencySettingName => "PaymentMethodCurrencyRestictions.{0}";
 
         public static string MapPaymentType(string paymentTypes)
         {
