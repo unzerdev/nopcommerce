@@ -311,9 +311,11 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
 
         private async Task HandlePaymentMethodRestrictions(UnzerPaymentSettings unzerPaymentSettings)
         {
-            var paymentMethods = unzerPaymentSettings.SelectedPaymentTypes.Select(p => UnzerPaymentDefaults.ReadPaymentTypeByUnzerName(p)).ToList();
+            var paymentMethods = unzerPaymentSettings.SelectedPaymentTypes.Select(p => UnzerPaymentDefaults.ReadPaymentTypeByUnzerName(p))
+                .Where(p => p.CountryRestrictions != null && p.CountryRestrictions.Any() || p.CurrencyRestrictions != null && p.CurrencyRestrictions.Any())
+                .ToList();
 
-            foreach (var method in paymentMethods.Where(p => p.CountryRestrictions.Any()))
+            foreach (var method in paymentMethods)
             {
                 var countrySettingKey = string.Format(NopPaymentDefaults.RestrictedCountriesSettingName, method.SystemName);
                 var currencySettingKey = string.Format(UnzerPaymentDefaults.RestrictedCurrencySettingName, method.SystemName);
