@@ -2,6 +2,7 @@
 using Nop.Core.Domain.Payments;
 using Nop.Services.Configuration;
 using Nop.Services.Customers;
+using Nop.Services.Directory;
 using Nop.Services.Localization;
 using Nop.Services.Payments;
 using Nop.Services.Plugins;
@@ -12,14 +13,16 @@ public class UnzerPaymentPluginManager : PaymentPluginManager
     protected readonly PaymentSettings _paymentSettings;
     protected readonly ISettingService _settingService;
     protected readonly IPluginService _pluginService;
+    protected readonly ICurrencyService _currencyService;
     protected readonly ILocalizationService _localizationService;
     protected UnzerPaymentSettings _unzerPaymentSettings;
 
     protected Dictionary<string, IList<IPaymentMethod>> _plugins = new();
-    public UnzerPaymentPluginManager(ICustomerService customerService, IPluginService pluginService, ISettingService settingService, PaymentSettings paymentSettings, UnzerPaymentSettings unzerPaymentSettings, ILocalizationService localizationService) : base(customerService, pluginService, settingService, paymentSettings)
+    public UnzerPaymentPluginManager(ICustomerService customerService, IPluginService pluginService, ISettingService settingService, PaymentSettings paymentSettings, UnzerPaymentSettings unzerPaymentSettings, ILocalizationService localizationService, ICurrencyService currencyService) : base(customerService, pluginService, settingService, paymentSettings)
     {
         _paymentSettings = paymentSettings;
         _pluginService = pluginService;
+        _currencyService = currencyService;
         _settingService = settingService;
         _localizationService = localizationService;
         _unzerPaymentSettings = unzerPaymentSettings;
@@ -34,6 +37,26 @@ public class UnzerPaymentPluginManager : PaymentPluginManager
         //filter by country
         if (countryId > 0)
             activePlugins = await activePlugins.WhereAwait(async method => !(await GetRestrictedCountryIdsAsync(method)).Contains(countryId)).ToListAsync();
+
+        if(_unzerPaymentSettings.EnforceCurrencyRestriction)
+        {
+            var currencyId = 0;
+            if (!string.IsNullOrEmpty(_unzerPaymentSettings.CurrencyCode))
+            {
+                var unzerCurrency = _currencyService.GetCurrencyByCodeAsync(_unzerPaymentSettings.CurrencyCode);
+                currencyId = unzerCurrency != null ? unzerCurrency.Id : 0;                
+            }
+
+            if (currencyId == 0 && customer != null)
+            {
+                currencyId = customer.CurrencyId.HasValue ? customer.CurrencyId.Value : 0;
+            }
+
+            if(currencyId > 0)
+            {
+                activePlugins = await activePlugins.WhereAwait(async method => !(await GetRestrictedCurrencyIdsAsync(method)).Contains(currencyId)).ToListAsync();
+            }
+        }
 
         return activePlugins;
     }
@@ -134,6 +157,22 @@ public class UnzerPaymentPluginManager : PaymentPluginManager
         }
 
         return await base.GetRestrictedCountryIdsAsync(paymentMethod);
+    }
+
+    private async Task<IList<int>> GetRestrictedCurrencyIdsAsync(IPaymentMethod paymentMethod)
+    {
+        ArgumentNullException.ThrowIfNull(paymentMethod);
+
+        var restrictList = new List<int>();
+
+        if (paymentMethod.PluginDescriptor.SystemName.Contains(UnzerPaymentDefaults.SystemName))
+        {
+            var settingKey = string.Format(UnzerPaymentDefaults.RestrictedCurrencySettingName, UnzerPaymentDefaults.SystemName);
+
+            return await _settingService.GetSettingByKeyAsync<List<int>>(settingKey) ?? new List<int>();
+        }
+
+        return new List<int>();
     }
 
     public async override Task<string> GetPluginLogoUrlAsync(IPaymentMethod meth)
