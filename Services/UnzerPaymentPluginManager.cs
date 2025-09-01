@@ -205,7 +205,7 @@ public class UnzerPaymentPluginManager : PaymentPluginManager
                 var systemName = unzerPlugin.PluginDescriptor.SystemName;
                 allPaymentPlugins.Remove(unzerPlugin);
 
-                foreach (var paymentMethod in _unzerPaymentSettings.SelectedPaymentTypes)
+                foreach (var paymentMethod in _unzerPaymentSettings.SelectedPaymentTypes.Where(p => !allSuppTypes.Contains(p)))
                 {
                     if (allPaymentPlugins.Any(p => p.PluginDescriptor.SystemName.Contains(paymentMethod)))
                         continue;
