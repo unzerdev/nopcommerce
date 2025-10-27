@@ -126,7 +126,7 @@ namespace Unzer.Plugin.Payments.Unzer.Controllers
             var apiKeyHasChanged = model.UnzerApiKey != null && model.UnzerApiKey != settings.UnzerApiKey;
             var countryRestrictionHasChanged = model.EnforceCountryRestriction != settings.EnforceCountryRestriction;
             var currencyRestrictionHasChanged = model.EnforceCurrencyRestriction != settings.EnforceCurrencyRestriction;
-            var methodSelectionHasChanged = model.SelectedPaymentTypes.Except(settings.SelectedPaymentTypes);
+            var methodSelectionHasChanged = selectedPayments.Except(settings.SelectedPaymentTypes);
 
             settings.UnzerApiBaseUrl = model.UnzerApiBaseUrl;
             settings.UnzerTokenUrl = model.UnzerTokenUrl;
